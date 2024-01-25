@@ -1,50 +1,32 @@
 #include <LiquidCrystal.h>
 #include <SoftwareSerial.h>
-#include "pitches.h"
+#include "melody_function.h"
+#include "levels_function.h"
 // Define pin for the buzzer
 #define BUZZER_PIN 12
-// Melody arrays for different tunes  
-int melody[] = {
-  NOTE_E5, NOTE_E5, REST, NOTE_E5, REST, NOTE_C5, NOTE_E5,
-  NOTE_G5, REST, NOTE_G4, REST, 
-  NOTE_C5, NOTE_G4, REST, NOTE_E4,
-  NOTE_A4, NOTE_B4, NOTE_AS4, NOTE_A4,
-  NOTE_G4, NOTE_E5, NOTE_G5, NOTE_A5, NOTE_F5, NOTE_G5,
-  REST, NOTE_E5,NOTE_C5, NOTE_D5, NOTE_B4,
-  NOTE_C5, NOTE_G4, REST, NOTE_E4,
-  NOTE_A4, NOTE_B4, NOTE_AS4, NOTE_A4,
-  NOTE_G4, NOTE_E5, NOTE_G5, NOTE_A5, NOTE_F5, NOTE_G5,
-  REST, NOTE_E5,NOTE_C5, NOTE_D5, NOTE_B4
-};// Melody played during the game
-int melody2[]={
-NOTE_C5, NOTE_G4, NOTE_E4,
-  NOTE_A4, NOTE_B4, NOTE_A4, NOTE_GS4, NOTE_AS4, NOTE_GS4,
-  NOTE_G4, NOTE_D4, NOTE_E4
-}; // Melody played when the game is over
+#define RED1 14
+#define RED2 15
+#define YELLOW1 16
+#define YELLOW2 17
+#define GREEN 18
 
-int durations[] = {
-  8, 8, 8, 8, 8, 8, 8,
-  4, 4, 8, 4,  
-};// Durations of notes in the melodies
-int durations1[] = {
-  //game over sound
-   
-  8, 8, 8, 8, 8, 8,
-  8, 8, 2
-};
+
 // SoftwareSerial for Bluetooth communication
 SoftwareSerial bluetooth(10, 11); // RX, TX pins for HC-05 module 
-  LiquidCrystal lcd(8, 7, 6, 5, 4, 3); // LiquidCrystal for LCD display
-  // Variables for game logic
-  float i = 0.0;
-  unsigned long startTime=0;
-  const unsigned long interval = 7000;// Time interval for the game
-  const unsigned long interval2 = 1500;// Time interval for the game over sound
-  String data;
-  float l1=1.25,l2=2.5,l3=3.75,l4=5.0,l5=6.25,s;      
-  int age=12,t=6.25;// Initial age and threshold time
-  static String receivedValueString = "";
-  int receivedValue = 0;
+LiquidCrystal lcd(8, 7, 6, 5, 4, 3); // LiquidCrystal for LCD display
+// Variables for game logic
+float i = 0.0;
+float j = 0.0;
+
+unsigned long startTime=0;
+const unsigned long interval = 7000;// Time interval for the game
+const unsigned long interval2 = 1500;// Time interval for the game over sound
+String data;
+float l1=1.25,l2=2.5,l3=3.75,l4=5.0,l5=6.25,s;      
+int age=12,t=6.25;// Initial age and threshold time
+static String receivedValueString = "";
+int receivedValue = 0;
+float l_hour;
 // Function to handle blowing interruption (attached to interrupt pin)
   void br()
   {
@@ -56,7 +38,8 @@ SoftwareSerial bluetooth(10, 11); // RX, TX pins for HC-05 module
           lcd.print("ENTER VALID AGE");
           }
     else{
-      i++;  
+      i++;
+      j++;  
       //Serial.println(i); 
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -71,47 +54,30 @@ SoftwareSerial bluetooth(10, 11); // RX, TX pins for HC-05 module
         lcd.print("Score:");lcd.print("100%");}
           // Illuminate LEDs based on time thresholds
       if (s < l2 && s >=l1) {
-          digitalWrite(14, HIGH);
-          digitalWrite(15, LOW);
-          digitalWrite(16, LOW);
-          digitalWrite(17, LOW);
-          digitalWrite(18, LOW);
+          level_1(RED1,RED2,YELLOW1,YELLOW2,GREEN);
          
       }
       else if (s < l3 && s >= l2) {
-          digitalWrite(14, HIGH);
-          digitalWrite(15, HIGH);
-          digitalWrite(16, LOW);
-          digitalWrite(17, LOW);
-          digitalWrite(18, LOW);   
+          level_2(RED1,RED2,YELLOW1,YELLOW2,GREEN) ;  
       }
       else if (s < l4 && s >= l3) {
-          digitalWrite(14, HIGH);
-          digitalWrite(15, HIGH);
-          digitalWrite(16, HIGH);
-          digitalWrite(17, LOW);
-          digitalWrite(18, LOW);
+          level_3(RED1,RED2,YELLOW1,YELLOW2,GREEN);
       }
       else if (s < l5 && s >= l4) {
-          digitalWrite(14, HIGH);
-          digitalWrite(15, HIGH);
-          digitalWrite(16, HIGH);
-          digitalWrite(17, HIGH);
-          digitalWrite(18, LOW);
+          level_4(RED1,RED2,YELLOW1,YELLOW2,GREEN);
       }
       else if (s >= l5) {
-          digitalWrite(14, HIGH);
-          digitalWrite(15, HIGH);
-          digitalWrite(16, HIGH);
-          digitalWrite(17, HIGH);
-          digitalWrite(18, HIGH);
+          level_5(RED1,RED2,YELLOW1,YELLOW2,GREEN);
       }
       if(i>=3 && i<=10)// Start the timer for the game
     {
       startTime = millis();
     }
-    bluetooth.print("Time:");// Send time information over Bluetooth
-    bluetooth.println(s);
+//    l_hour = (j * 1 / 7.5);
+//    j=0.0;
+    String data=String(s)+","+String(l_hour);
+    bluetooth.println(data);
+   
     } 
   }
   void setup() {
@@ -124,7 +90,7 @@ SoftwareSerial bluetooth(10, 11); // RX, TX pins for HC-05 module
       lcd.print("   !!Welcome!!");
       lcd.setCursor(0, 1);
       lcd.print("    ENTER AGE");
-      start();// Play the starting melody
+      start(BUZZER_PIN  );// Play the starting melody
       pinMode(2, INPUT_PULLUP);// Set the blowing interrupt pin as an input with a pull-up resistor
       pinMode(14, OUTPUT);
       pinMode(15, OUTPUT);
@@ -133,45 +99,7 @@ SoftwareSerial bluetooth(10, 11); // RX, TX pins for HC-05 module
       pinMode(18, OUTPUT);
       attachInterrupt(digitalPinToInterrupt(2), br, RISING); // Attach the interrupt handler
   }
-  void start()// Function to play the starting melody
-{
-   int size = sizeof(durations) / sizeof(int);
 
-  for (int note = 0; note < size; note++) {
-    //to calculate the note duration, take one second divided by the note type.
-    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-    int duration = 1000 / durations[note];
-    tone(BUZZER_PIN, melody[note], duration);
-
-    //to distinguish the notes, set a minimum time between them.
-    //the note's duration + 30% seems to work well:
-    int pauseBetweenNotes = duration * 1.30;
-    delay(pauseBetweenNotes);
-    
-    //stop the tone playing:
-    noTone(BUZZER_PIN);
-}
-}
-void over()
-{
- int size = sizeof(durations1) / sizeof(int);
-
-  for (int note = 0; note < size; note++) {
-    //to calculate the note duration, take one second divided by the note type.
-    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-    int duration = 1000 / durations1[note];
-    tone(BUZZER_PIN, melody2[note], duration);
-
-    //to distinguish the notes, set a minimum time between them.
-    //the note's duration + 30% seems to work well:
-    int pauseBetweenNotes = duration * 1.30;
-    delay(pauseBetweenNotes);
-    
-    //stop the tone playing:
-    noTone(BUZZER_PIN);
-
-  }
-}
   void resetgame()
   {
     analogWrite(9, 0);
@@ -182,15 +110,11 @@ void over()
     lcd.print(age);
     lcd.setCursor(0, 1);
     lcd.print("   NEXT TURN..!!       ");
-    digitalWrite(14, LOW);
-    digitalWrite(15, LOW);
-    digitalWrite(16, LOW);
-    digitalWrite(17, LOW);
-    digitalWrite(18, LOW);
-    digitalWrite(19, LOW);
+    all_off(RED1,RED2,YELLOW1,YELLOW2,GREEN);
     i = 0;
     s=0;
     startTime = 0;
+    l_hour=0; 
   }
   
   void loop() {
@@ -221,45 +145,20 @@ void over()
             lcd.print(" START BLOWING");
               // Set time thresholds based on age
              if(age<=8 && age>5){//1 LITRES
-              l1=0.875;
-              l2=1.50;
-              l3=3.125;
-              l4=3.75;
-              l5=4.5;
-              t=4.5; 
+              l1=0.875;l2=1.50;l3=3.125;l4=3.75;l5=4.5;t=4.5; 
             }  
             if(age<=12 && age>8){//1 LITRES
-              l1=1.875;
-              l2=2.50;
-              l3=3.125;
-              l4=5.75;
-              l5=6.5;
-              t=6.5; 
+              l1=1.875;l2=2.50;l3=3.125;l4=5.75;l5=6.5;t=6.5; 
             } 
             if((age<=16 && age>12)|| (age>40)){//2 LITRES
-              l1=3.25;
-              l2=4.5;
-              l3=5.75;
-              l4=7.0;
-              l5=8.25;
-              t=8.25;
+              l1=3.25;l2=4.5;l3=5.75;l4=7.0;l5=8.25;t=8.25;
             }
             if(age<=40 && age>25)//4 LITRES
             {
-              l1=2.5;
-              l2=5.0;
-              l3=7.5;
-              l4=10.0;
-              l5=12.5;
-              t=12.5;
+              l1=2.5;l2=5.0;l3=7.5;l4=10.0;l5=12.5;t=12.5;
             }
             if(age<=25 && age>16){//4.8 LITRES
-                l1=3;
-                l2=6;
-                l3=9;
-                l4=12;
-                l5=15; 
-                t=15;  
+                l1=3;l2=6;l3=9;l4=12;l5=15;t=15;  
             }   
           }  
         receivedValueString = ""; // Clear the received value string
@@ -269,42 +168,22 @@ void over()
   // Check if it's time to play the success sound
   if(startTime != 0 && (millis() - startTime) > interval2 ) 
     {  
-       // Play different sounds based on the achieved level   
-          if(s >= l5)
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          tone(BUZZER_PIN,NOTE_G5 , 400);delay(100);
-          tone(BUZZER_PIN,NOTE_A5 , 600);delay(100);
-          tone(BUZZER_PIN,NOTE_B5, 800);delay(100);
-          tone(BUZZER_PIN,NOTE_C5 , 1000);delay(100);noTone(BUZZER_PIN);} 
-          else if(s < l5 && s >= l4)
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          tone(BUZZER_PIN,NOTE_G5 , 400);delay(100);
-          tone(BUZZER_PIN,NOTE_A5 , 600);delay(100);
-          tone(BUZZER_PIN,NOTE_B5, 800);delay(100);
-          noTone(BUZZER_PIN);}
-          else if(s < l4 && s >= l3)
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          tone(BUZZER_PIN,NOTE_G5 , 400);delay(100);
-          tone(BUZZER_PIN,NOTE_A5 , 600);delay(100);
-          noTone(BUZZER_PIN);}
-          else if(s < l2 && s >=l1)
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          noTone(BUZZER_PIN);}
-          else
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          tone(BUZZER_PIN,NOTE_G5 , 400);delay(100);
-          noTone(BUZZER_PIN);}
-          
+       tune(s,BUZZER_PIN,l1,l2,l3,l4,l5);
                      
     }
     // Check if it's time to end the game
     if(startTime != 0 && (millis() - startTime) > interval ) 
     {     
-          over();// Play the game over melody
+          over(BUZZER_PIN);// Play the game over melody
           resetgame(); // Reset the game state    
     } 
     // Send time information over Bluetooth
-    bluetooth.print("Time: ");
-    bluetooth.println(s);
+    // (Pulse frequency x 60 min) / 7.5Q = flowrate in L/hour 
+    l_hour = (j * 1 / 7.5);
+    
+    j=0.0;    
+    String data=String(s)+","+String(l_hour);
+    bluetooth.println(data);
+    //Serial.println(data);
     delay(1000);       // Delay for stability
   }
