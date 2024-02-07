@@ -32,9 +32,12 @@ function LoginForm() {
           'Content-Type': 'application/json'
         }
       });
-      const profiles = response.data;
-      if (response.status === 200) {
-        navigate('/profiles',{ state: { profiles } }); // Redirect to the profiles page after successful login
+      const userData = response.data;
+      console.log(response.data);
+      
+      console.log(error);
+      if (response.status === 200 || response.status === 204) {
+        navigate('/profiles', { state: { uid: userData.u_id, profiles: userData.profile } }); // Redirect to the profiles page after successful login
       }
        // assuming the server sends back some response
     } catch (error) {
