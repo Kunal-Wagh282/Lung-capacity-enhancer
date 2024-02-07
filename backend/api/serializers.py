@@ -18,7 +18,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['p_name','p_dob']
 
+class ProfileAddSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['u_id','p_name','p_dob']
+
 class ProfileDelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['p_name']
+        fields = ['u_id','p_name']

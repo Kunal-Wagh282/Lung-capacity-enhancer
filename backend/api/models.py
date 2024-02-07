@@ -12,7 +12,6 @@ def get_id():
 # Create your models here.
 class User(models.Model):
     u_id = models.IntegerField(unique=True,default=get_id)
-    session_id = models.CharField(max_length=100 ,null = True, blank=True)
     username = models.CharField(max_length = 15)
     f_name = models.CharField(max_length = 50)
     l_name = models.CharField(max_length = 50)

@@ -16,8 +16,6 @@ class Register(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            
-            user = queryset.first()
 
             username = serializer.data.get('username')
             f_name = serializer.data.get('f_name')
@@ -26,7 +24,7 @@ class Register(APIView):
             password = serializer.data.get('password')
             queryset = User.objects.filter (username = username)
             if queryset.exists():
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(serializer.errors, status=status.HTTP_226_IM_USED)
             
             else :
                 user = User(username=username,f_name=f_name,l_name=l_name,dob=dob,password=password)
@@ -52,19 +50,11 @@ class Login(APIView):
             password = serializer.data.get('password')
             queryset = User.objects.filter(username= username,password = password)
             if queryset.exists():
-                if not self.request.session.exists(self.request.session.session_key):
-                    self.request.session.create()   
-                users_to_update = User.objects.filter(session_id=self.request.session.session_key)
-                users_to_update.update(session_id='')
                 user = queryset.first()
-                if user.session_id != self.request.session.session_key:
-                    user.session_id = self.request.session.session_key
-                    user.save(update_fields=['session_id'])
                 profile_queryset = Profile.objects.filter(u_id = user.u_id)
-
                 if profile_queryset.exists():
                     profiles = profile_queryset
-                    return Response(ProfileSerializer(profiles,many = True).data,status=status.HTTP_200_OK)
+                    return Response({'u_id':user.u_id, "profile": ProfileSerializer(profiles,many = True).data},status=status.HTTP_200_OK)
                 else:
                     return Response({'error': 'No Profiles Exisits Currently '},status=status.HTTP_204_NO_CONTENT)            
             else:
@@ -74,24 +64,22 @@ class Login(APIView):
         
 
 class AddProfile(APIView):
-    serializer_class = ProfileSerializer
+    serializer_class = ProfileAddSerializer
 
     def post(self, request, format = None):
         serializer = self.serializer_class(data = request.data)
+
         if serializer.is_valid():
+            u_id = serializer.data.get('u_id')
             p_name = serializer.data.get('p_name')
             p_dob = serializer.data.get('p_dob')
-            queryset = Profile.objects.filter(p_name=p_name)
+            queryset = Profile.objects.filter(p_name=p_name,u_id=u_id)
             if queryset.exists():
-                return Response({'error' : 'Profile name alredy existes '},status=status.HTTP_226_IM_USED)
-            queryset = User.objects.filter(session_id = self.request.session.session_key)
-            if not queryset.exists():
-                return Response({'error':'sessionauth failed, try loging in again'},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+                return Response({'error' : 'Profile name alredy There ','u_id':u_id},status=status.HTTP_226_IM_USED)
             else:
-                u_id = User.objects.filter(session_id = self.request.session.session_key).first().u_id
                 profile = Profile(p_name=p_name,u_id = u_id, p_dob = p_dob)
                 profile.save()
-                return Response(ProfileSerializer(Profile.objects.filter(u_id=u_id),many = True).data,status=status.HTTP_201_CREATED)
+                return Response({'u_id':u_id,"profile ":ProfileSerializer(Profile.objects.filter(u_id=u_id),many = True).data},status=status.HTTP_201_CREATED)         
         else:
             return Response(serializer.errors,status=status.HTTP_406_NOT_ACCEPTABLE)
 
@@ -101,20 +89,16 @@ class DelProfile(APIView):
     def post(self, request, format = None):
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid():
+            u_id = serializer.data.get('u_id')
             p_name = serializer.data.get('p_name')
-            queryset = User.objects.filter(session_id = self.request.session.session_key)
-            if not queryset.exists():
-                return Response({'error':'sessionauth failed, try loging in again'},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+            del_queryset = Profile.objects.filter(u_id=u_id,p_name=p_name)
+            if del_queryset.exists():
+                del_queryset.delete()
+                return Response({'u_id':u_id,"profile ":ProfileSerializer(Profile.objects.filter(u_id=u_id),many = True).data},status=status.HTTP_202_ACCEPTED)
+                
             else:
-                u_id = queryset.first().u_id
-                del_queryset = Profile.objects.filter(u_id=u_id,p_name=p_name)
-                if del_queryset.exists():
-                    del_queryset.delete()
-                    return Response(ProfileSerializer(Profile.objects.filter(u_id=u_id),many = True).data,status=status.HTTP_202_ACCEPTED)
-                    
-                else:
-                    return Response({'error': 'Profile not found'},status=status.HTTP_404_NOT_FOUND)
-                    
+                return Response({'error': 'Profile not found'},status=status.HTTP_404_NOT_FOUND)
+                
         else:
             return Response(serializer.errors,status=status.HTTP_406_NOT_ACCEPTABLE)
 
