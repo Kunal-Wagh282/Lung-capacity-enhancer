@@ -6,4 +6,5 @@ urlpatterns = [
     path('register/', views.Register.as_view()),
     path('display/',views.display),
     path('add-profile/', views.AddProfile.as_view()),
+    path('del-profile/', views.DelProfile.as_view()),
 ]

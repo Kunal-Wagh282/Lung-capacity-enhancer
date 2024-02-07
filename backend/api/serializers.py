@@ -17,3 +17,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['p_name','p_dob']
+
+class ProfileDelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['p_name']
