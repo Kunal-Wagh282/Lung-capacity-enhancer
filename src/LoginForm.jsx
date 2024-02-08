@@ -5,6 +5,7 @@ import DateInput from './DateInput';
 import SubmitButton from './SubmitButton';
 import './LoginForm.css' // Import the CSS file
 import { useNavigate } from 'react-router-dom';
+import API_URL from './config'; // Import the API URL
 
 
 
@@ -23,8 +24,11 @@ function LoginForm() {
     
 
     
+
+
+
     try {
-      const response = await axios.post('http://192.168.29.51:8000/api/login/', {
+      const response = await axios.post(`${API_URL}/login/`, {
         username: username,
         password: password
       }, {

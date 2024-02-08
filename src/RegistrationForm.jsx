@@ -6,6 +6,7 @@ import SubmitButton from './SubmitButton';
 import PopupMessage from './PopupMessage'; // Import the PopupMessage component
 import './LoginForm.css'; // Import the CSS file
 import { Link, useNavigate } from 'react-router-dom';
+import API_URL from './config'; // Import the API URL
 
 function RegistrationForm() {
   const [username, setUsername] = useState('');
@@ -46,7 +47,7 @@ function RegistrationForm() {
     setError('');
 
     try {
-      const response = await axios.post('http://192.168.29.51:8000/api/register/', {
+      const response = await axios.post(`${API_URL}/register/`, {
         username: username,
         f_name: f_name,
         l_name: l_name,

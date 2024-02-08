@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
+import API_URL from './config'; // Import the API URL
 
 function ProfilePage() {
   const { state } = useLocation();
@@ -23,7 +24,7 @@ function ProfilePage() {
     setAddingChildUser(true);
 
     try {
-      const response = await axios.post('http://192.168.29.51:8000/api/add-profile/', {
+      const response = await axios.post(`${API_URL}/add-profile/`, {
         u_id: uid, // Assuming the first profile in the array is the parent profile
         p_name: newChildUsername,
         p_dob: newChildDOB,
