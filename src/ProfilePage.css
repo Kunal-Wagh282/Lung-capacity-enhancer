@@ -1,0 +1,19 @@
+/* Style for the dropdown container */
+.dropdown-container {
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    left: 20px; /* Adjust as needed */
+    font-size: 20px; /* Adjust as needed */
+  }
+  
+  /* Style for the dropdown select element */
+  .dropdown-select {
+    width: 300px; /* Adjust as needed */
+    font-size: 16px; /* Adjust as needed */
+  }
+  
+  /* Style for the dropdown options */
+  .dropdown-option {
+    font-weight: bold;
+  }
+  
