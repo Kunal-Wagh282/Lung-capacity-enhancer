@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 import API_URL from './config'; // Import the API URL
 import PopupMessage from './PopupMessage';
+import BleButton from './BleButton';
 
 function ProfilePage() {
   const { state } = useLocation();
@@ -12,15 +13,12 @@ function ProfilePage() {
   const [newChildUsername, setNewChildUsername] = useState('');
   const [newChildDOB, setNewChildDOB] = useState('');
   const [addingChildUser, setAddingChildUser] = useState(false);
-  const [deletingChildUser, setDeletingChildUser] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState(false);
   const [errorMessage,setErrorMessage] = useState('');
   const [selectedProfileAge, setSelectedProfileAge] = useState(null); // State to store selected profile age
   const [selectedProfileName, setSelectedProfileName] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
   const [listvalue, setListValue] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
-  const navigate = useNavigate();
-  let mainUser=profiles.find(profile => profile.uid === profiles.uid).p_name;
   // console.log('SelectedProfile', selectedProfileName)
   // console.log('MainUser',mainUser)
 
@@ -42,9 +40,7 @@ function ProfilePage() {
     console.log('SelectedProfile',selectedProfile)
     setSelectedProfileAge(calculateAge(selectedProfile.p_dob));
     setSelectedProfileName(e.target.value);   
-    //}
-    //console.log(profiles.find(profile => profile.u_id === profiles.uid).p_name); 
-  };
+      };
 
   
   const deleteChildUser = async () => {
@@ -56,7 +52,6 @@ function ProfilePage() {
       return;
     } else {
       setError('');
-      setDeletingChildUser(true);
       try {
         const response = await axios.post(`${API_URL}/del-profile/`, {
           u_id: uid,
@@ -77,13 +72,8 @@ function ProfilePage() {
         }
       } catch (error) {
         setError(error)
-      } finally {
-        if (is400Error) {
-          setDeletingChildUser(true); // Set to true if 400 error occurred
-        } else {
-          setDeletingChildUser(false);
-        }
-      }
+      } 
+      
     }
   };
   
@@ -181,7 +171,7 @@ function ProfilePage() {
 
       {/* Pop-up message for success */}
       {successMessage && <PopupMessage message={errorMessage} />}
-      
+      <BleButton/>
     </div>
    
   );

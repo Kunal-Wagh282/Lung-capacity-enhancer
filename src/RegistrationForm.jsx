@@ -22,17 +22,15 @@ function RegistrationForm() {
 
   useEffect(() => {
     let intervalId;
-
     if (showSuccessPopup) {
       intervalId = setInterval(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
     }
-
     return () => {
       clearInterval(intervalId);
     };
-  }, [showSuccessPopup]);
+  },[showSuccessPopup]);
 
   useEffect(() => {
     if (countdown === 0) {
