@@ -1,11 +1,11 @@
 import React from 'react';
 
-function TextInput({ label, value, onChange, id }) {
+function TextInput({ label, value, onChange, id,type }) {
   return (
     <div>
       <label htmlFor={id}>{label}:</label>
       <input
-        type="text"
+        type={type}
         id={id}
         value={value}
         onChange={onChange}

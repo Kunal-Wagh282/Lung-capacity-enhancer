@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate ,Link} from 'react-router-dom';
 import './ProfilePage.css';
 import API_URL from './config'; // Import the API URL
 import PopupMessage from './PopupMessage';
@@ -20,6 +20,20 @@ function ProfilePage() {
   const [selectedProfileName, setSelectedProfileName] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
   const [listvalue, setListValue] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
   const [addingChildUser, setAddingChildUser] = useState(false);
+  //console.log(profiles);
+  useEffect(()=>{
+    ;(async () => {
+        const response = await axios.post(`${API_URL}/login/`, {
+          username: state?.username,
+          password: state?.password
+        });
+        setProfiles((response.data).profile);    
+    })()
+  },[]
+  );
+  
+
+
 
   const calculateAge = (dob) => {
     const dobDate = new Date(dob);
@@ -42,7 +56,7 @@ function ProfilePage() {
 
   
   const deleteChildUser = async () => {
-    let is400Error = false;
+    
     if (profiles.length === 1) {
       setSuccessMessage(true);
       setErrorMessage(`Main user can't be deleted`)
@@ -65,7 +79,7 @@ function ProfilePage() {
           setSuccessMessage(true);
           setErrorMessage(`Main user can't be deleted`)
           setTimeout(() => setSuccessMessage(false), 3000);
-          let is400Error=true;
+        
         }
       } catch (error) {
         setError(error)
@@ -96,7 +110,7 @@ function ProfilePage() {
       }
       if (response.status === 226) {
         setSuccessMessage(true);
-        setErrorMessage(`Invalid Age, please try again(age is below 5)`)
+        setErrorMessage(`Invalid Age, please try again(age must be above 5)`)
         setTimeout(() => setSuccessMessage(false), 3000);
         setError(error)
         is400Error = true;
@@ -134,7 +148,8 @@ function ProfilePage() {
      <Modal isOpen={addingChildUser} onClose={() => setAddingChildUser(false)} newChildUsername={newChildUsername} setNewChildUsername={setNewChildUsername} newChildDOB={newChildDOB} setNewChildDOB={setNewChildDOB} handleAddChildUser={handleAddChildUser} />
 
       {successMessage && <PopupMessage message={errorMessage} />}
-      <BleButton/>
+      <BleButton/><br/>
+      <button><Link to="/login">Logout</Link></button>
     </div>
   );
 }

@@ -33,7 +33,7 @@ function LoginForm() {
       
       console.log(error);
       if (response.status === 200 || response.status === 204) {
-        navigate('/profiles', { state: { uid: userData.u_id, profiles: userData.profile } }); // Redirect to the profiles page after successful login
+        navigate('/profiles', { state: { uid: userData.u_id, profiles: userData.profile,username: username,password: password } }); // Redirect to the profiles page after successful login
       }
        // assuming the server sends back some response
     } catch (error) {
@@ -51,6 +51,7 @@ function LoginForm() {
       {error && <p className="error-message">{error}</p>} {/* Apply the CSS class */}
       <form onSubmit={handleSubmit}>
         <TextInput
+          type="text"
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -58,6 +59,7 @@ function LoginForm() {
         />
         <TextInput
           label="Password"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           id="password"

@@ -17,12 +17,13 @@ function RegistrationForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showSuccessPopup, setShowSuccessPopup] = useState(false); // State to control the visibility of success popup
+  const [redirect, setRedirect] = useState(false); 
   const [countdown, setCountdown] = useState(5); // Initial countdown value
   const navigate = useNavigate();
 
   useEffect(() => {
     let intervalId;
-    if (showSuccessPopup) {
+    if (redirect) {
       intervalId = setInterval(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
@@ -30,11 +31,11 @@ function RegistrationForm() {
     return () => {
       clearInterval(intervalId);
     };
-  },[showSuccessPopup]);
+  },[redirect]);
 
   useEffect(() => {
     if (countdown === 0) {
-      setShowSuccessPopup(false); // Hide the success popup after countdown reaches 0
+      setRedirect(false); // Hide the success popup after countdown reaches 0
       navigate('/login'); // Redirect to the login page after successful registration
     }
   }, [countdown, navigate]);
@@ -58,20 +59,24 @@ function RegistrationForm() {
       });
 
       if (response.status === 201) {
-        setShowSuccessPopup(true); // Show the success popup
+        setRedirect(true); // Show the success popup
+        setError('')
       }
       if (response.status === 226) {
         console.log('Username already registered');
         setError('Username already registered');
+        setShowSuccessPopup(true);
+        setTimeout(() => setShowSuccessPopup(false), 3000);
         // Clear all input fields
         setUsername('');
-        setFname('');
-        setLname('');
-        setDOB('');
-        setPassword('');
       }
     } catch (error) {
-      setError(error.message);
+      if(error.response.status === 400){    
+      setShowSuccessPopup(true);
+      setError('Invalid Age, please try again(age must be above 5)');
+      setTimeout(() => setShowSuccessPopup(false), 3000);
+      setDOB('');
+     } 
     }
 
     setLoading(false);
@@ -80,33 +85,37 @@ function RegistrationForm() {
   return (
     <div className="registration-form-container">
       <h2>Register</h2>
-      {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>
         <TextInput
           label="Username"
+          type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           id="username"
         />
         <TextInput
           label="First Name"
+          type="text"
           value={f_name}
           onChange={(e) => setFname(e.target.value)}
           id="f_name"
         />
         <TextInput
           label="Last Name"
+          type="text"
           value={l_name}
           onChange={(e) => setLname(e.target.value)}
           id="l_name"
         />
         <DateInput
+        
           label="Date of Birth"
           value={dob}
           onChange={(e) => setDOB(e.target.value)}
           id="dob"
         />
         <TextInput
+          type="password"
           label="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -114,11 +123,8 @@ function RegistrationForm() {
         />
         <SubmitButton loading={loading} text="Register" />
       </form>
-      {showSuccessPopup && (
-        <PopupMessage
-          message={`Username created successfully. Redirecting to login page in ${countdown} seconds...`}
-        />
-      )}
+      {redirect && (<PopupMessage message={`Username created successfully. Redirecting to login page in ${countdown} seconds...`}/>)}
+      {showSuccessPopup && (<PopupMessage message={error}/>)}
       <p>Already registered? <Link to="/login">Login here</Link></p>
     </div>
   );
