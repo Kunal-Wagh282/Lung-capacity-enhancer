@@ -1,59 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
 import API_URL from './config'; // Import the API URL
 import PopupMessage from './PopupMessage';
 import './BleButton.css';
 
-
-
-export default function BleButton() {
+function BleButton() {
     const [isConnected, setIsConnected] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
-    const [message,setMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
+    const connectBle = async () => { 
+        try {
+            const response = await axios.post(`${API_URL}/bt-connect/`);
+            console.log(response);
+            if (response.status === 200) {
+                setIsConnected(true);
+                setSuccessMessage(true);
+                setErrorMessage('Bluetooth connected successfully.');
+                setTimeout(() => setSuccessMessage(false), 3000); // Display the message for 3 seconds before hiding it.
+            }
+        } 
+        catch (error) {  
+            console.error(error);
+            setSuccessMessage(true);
+            setErrorMessage('Error connecting to Bluetooth.');
+            setTimeout(() => setSuccessMessage(false), 3000); // Display the message for 3 seconds before hiding it.
+        }
+    }
 
+    const disconnectBle = async () => { 
+        try {
+            const response = await axios.post(`${API_URL}/bt-disconnect/`);
+            console.log(response);
+            if (response.status === 200) {
+                setIsConnected(false);
+                setSuccessMessage(true);
+            }
+        } 
+        catch (error) {  
+            console.error(error);
+            setSuccessMessage(true);
+        }
+    }
 
-    const connectBle= async() => { 
-      
-       console.log("connectBle");
-       let isConnected = false; // Flag to indicate if a 400 error occurred
-    try {
-      //const response = await axios.post(`${API_URL}//`)
-      //console.log(response)
-    //   if (response.status === 201) {
-    //     setIsConnected = true; // Setting
-    //   }
-    
-        setSuccessMessage(true);
-        setMessage('Bluetooth Connected');
-        setTimeout(() => setSuccessMessage(false), 3000);
-    } 
-    catch (error) {  
-        console.error( error);
-        setSuccessMessage(true);
-        setMessage('An unexpected error occurred. Please try again later.');
-        setTimeout(() => setSuccessMessage(false), 3000);
-    } 
-         
-      };
-return(
-<>
-<button className="bluetooth-button" onClick={connectBle} >
-  Connect
-</button>
-{successMessage && <PopupMessage message={message} />}
-</>
-)
+    return (
+        <>
+            <button className="bluetooth-button" onClick={connectBle} disabled={isConnected}>
+                Connect
+            </button>
+            <button className="bluetooth-button" onClick={disconnectBle} disabled={!isConnected}>
+                Disconnect
+            </button>
+            {successMessage && <PopupMessage message={errorMessage}/>}
+        </>
+    );
 }
 
-
-
-
-
-
-
-
-
-
-
+export default BleButton;

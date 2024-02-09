@@ -112,7 +112,7 @@ function RegistrationForm() {
           onChange={(e) => setPassword(e.target.value)}
           id="password"
         />
-        <SubmitButton loading={loading} text="Login" />
+        <SubmitButton loading={loading} text="Register" />
       </form>
       {showSuccessPopup && (
         <PopupMessage

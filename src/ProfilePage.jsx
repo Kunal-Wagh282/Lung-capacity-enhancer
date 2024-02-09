@@ -5,6 +5,7 @@ import './ProfilePage.css';
 import API_URL from './config'; // Import the API URL
 import PopupMessage from './PopupMessage';
 import BleButton from './BleButton';
+import Modal from './Modal'; // Import your modal component
 
 function ProfilePage() {
   const { state } = useLocation();
@@ -12,15 +13,13 @@ function ProfilePage() {
   const [uid, setUid] = useState(state?.uid);
   const [newChildUsername, setNewChildUsername] = useState('');
   const [newChildDOB, setNewChildDOB] = useState('');
-  const [addingChildUser, setAddingChildUser] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState(false);
   const [errorMessage,setErrorMessage] = useState('');
-  const [selectedProfileAge, setSelectedProfileAge] = useState(null); // State to store selected profile age
+  const [selectedProfileAge, setSelectedProfileAge] = useState(null);
   const [selectedProfileName, setSelectedProfileName] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
   const [listvalue, setListValue] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
-  // console.log('SelectedProfile', selectedProfileName)
-  // console.log('MainUser',mainUser)
+  const [addingChildUser, setAddingChildUser] = useState(false);
 
   const calculateAge = (dob) => {
     const dobDate = new Date(dob);
@@ -37,10 +36,9 @@ function ProfilePage() {
       
     setListValue(e.target.value);
     const selectedProfile = profiles.find(profile => profile.p_name === e.target.value);
-    console.log('SelectedProfile',selectedProfile)
     setSelectedProfileAge(calculateAge(selectedProfile.p_dob));
     setSelectedProfileName(e.target.value);   
-      };
+  };
 
   
   const deleteChildUser = async () => {
@@ -58,7 +56,6 @@ function ProfilePage() {
           p_name: selectedProfileName
         });
         if (response.status === 202) {
-          // Remove the deleted profile from the profiles array
           setProfiles(response.data["profile"]);
           setSuccessMessage(true);
           setErrorMessage('Username deleted successfully.')
@@ -73,21 +70,16 @@ function ProfilePage() {
       } catch (error) {
         setError(error)
       } 
-      
     }
   };
-  
-  
   
   const handleAddChildUser = async () => {
     setError('');
     setAddingChildUser(true);
-  
-    let is400Error = false; // Flag to indicate if a 400 error occurred
-    
+    let is400Error = false;
     try {
       const response = await axios.post(`${API_URL}/add-profile/`, {
-        u_id: uid, // Assuming the first profile in the array is the parent profile
+        u_id: uid,
         p_name: newChildUsername,
         p_dob: newChildDOB,
       });
@@ -98,34 +90,30 @@ function ProfilePage() {
         setProfiles(response.data["profile"]);
         setNewChildUsername('');
         setNewChildDOB('');
-        setSuccessMessage(true); // Set to true to display the success message
-        setErrorMessage('Username created successfully.'); // Set
+        setSuccessMessage(true);
+        setErrorMessage('Username created successfully.');
         setTimeout(() => setSuccessMessage(false), 3000);
       }
       if (response.status === 226) {
         setSuccessMessage(true);
         setErrorMessage(`Invalid Age, please try again(age is below 5)`)
         setTimeout(() => setSuccessMessage(false), 3000);
-        setError(error) // Store the error response data for further use
-        is400Error = true; // Set flag to true if 400 error occurred
+        setError(error)
+        is400Error = true;
       }
     } catch (error) {  
         console.error( error);
         setSuccessMessage(true);
-        //setErrorMessage('An unexpected error occurred. Please try again later.');
         setTimeout(() => setSuccessMessage(false), 3000);
     } finally {
-    
       if (is400Error) {
-        setAddingChildUser(true); // Set to true if 400 error occurred
+        setAddingChildUser(true);
       } else {
         setAddingChildUser(false);
       }
     }
   };
   
-  
-
   return (
     <div className="profile-page-container">
       <h2>Dashboard</h2>
@@ -143,39 +131,12 @@ function ProfilePage() {
           <button onClick={() => deleteChildUser(true)}>Delete Child User</button>
         </div>
       )}
+     <Modal isOpen={addingChildUser} onClose={() => setAddingChildUser(false)} newChildUsername={newChildUsername} setNewChildUsername={setNewChildUsername} newChildDOB={newChildDOB} setNewChildDOB={setNewChildDOB} handleAddChildUser={handleAddChildUser} />
 
-      {/* Form to add a child user */}
-      {addingChildUser && (
-        <div className="add-child-user-form">
-          <h3>Add Child User</h3>
-          <input
-            type="text"
-            value={newChildUsername}
-            onChange={(e) => setNewChildUsername(e.target.value)}
-            placeholder="Child Username"
-            required
-          />
-          <input
-            type="date"
-            value={newChildDOB}
-            onChange={(e) => setNewChildDOB(e.target.value)}
-            placeholder="Child Date of Birth"
-            required
-          />
-          <button onClick={handleAddChildUser} disabled={!addingChildUser}>
-            Add
-          </button>
-          
-        </div>
-      )}
-
-      {/* Pop-up message for success */}
       {successMessage && <PopupMessage message={errorMessage} />}
       <BleButton/>
     </div>
-   
   );
-  
 }
 
 export default ProfilePage;
