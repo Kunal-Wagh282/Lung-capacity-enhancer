@@ -22,17 +22,15 @@ function RegistrationForm() {
 
   useEffect(() => {
     let intervalId;
-
     if (showSuccessPopup) {
       intervalId = setInterval(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
     }
-
     return () => {
       clearInterval(intervalId);
     };
-  }, [showSuccessPopup]);
+  },[showSuccessPopup]);
 
   useEffect(() => {
     if (countdown === 0) {
@@ -114,7 +112,7 @@ function RegistrationForm() {
           onChange={(e) => setPassword(e.target.value)}
           id="password"
         />
-        <SubmitButton loading={loading} text="Login" />
+        <SubmitButton loading={loading} text="Register" />
       </form>
       {showSuccessPopup && (
         <PopupMessage
