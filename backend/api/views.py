@@ -8,12 +8,9 @@ from.serializers import*
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime
-import bluetooth
+
 import time
 
-hc05_address = "00:00:13:00:11:23" 
-global sock
-sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
 # Create your views here.
 
@@ -129,7 +126,6 @@ class DelProfile(APIView):
 class ConnectBT(APIView):
     def post(self, request, fromat= None):
         try:
-            sock.connect((hc05_address, 1))  # Use channel 1 for serial communication
             return Response({'success':'Connected'},status=status.HTTP_200_OK)
         except bluetooth.BluetoothError as e:
             return Response({'error': 'Bluetooth Error'},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
@@ -137,8 +133,6 @@ class ConnectBT(APIView):
 class DisconnectBT(APIView):
     def post(self, request, fromat= None):
         try:
-            sock.close()
-            sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
             return Response({'success':'Disconnected'},status=status.HTTP_200_OK)
         except bluetooth.BluetoothError as e:
             return Response({'error': 'Bluetooth Error'},status=status.HTTP_401_UNAUTHORIZED)
