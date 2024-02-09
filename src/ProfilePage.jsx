@@ -58,7 +58,7 @@ function ProfilePage() {
         u_id: uid,
         p_name: selectedProfileName
       });
-  
+      console.log(response)
       if (response.status === 202) {
         // Remove the deleted profile from the profiles array
         
@@ -91,7 +91,6 @@ function ProfilePage() {
       
       if (response.status === 201) {
        
-        
         setProfiles(response.data["profile"]);
         setNewChildUsername('');
         setNewChildDOB('');
@@ -122,11 +121,6 @@ function ProfilePage() {
           <button onClick={() => deleteChildUser(true)}>Delete Child User</button>
         </div>
       )}
-
-      {/* Display age of selected profile */}
-      {/* {selectedProfileAge !== '' && (
-        <p>Age of selected profile: {selectedProfileAge}</p>
-      )} */}
 
       {/* Form to add a child user */}
       {addingChildUser && (
