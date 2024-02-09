@@ -13,6 +13,7 @@
   
   .registration-form-container h2 {
     margin-bottom: 20px;
+    color:#0056b3;
   }
   
   .registration-form-container label {
@@ -44,3 +45,7 @@
     background-color: #0056b3;
   }
   
+  .form{
+    color:aqua;
+    color:rebeccapurple;
+  }
