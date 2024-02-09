@@ -15,13 +15,14 @@ function ProfilePage() {
   const [deletingChildUser, setDeletingChildUser] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState(false);
-  const [deleteMessage, setDeleteMessage] = useState(false);
+  const [errorMessage,setErrorMessage] = useState('');
   const [selectedProfileAge, setSelectedProfileAge] = useState(null); // State to store selected profile age
-  const [selectedProfileName, setSelectedProfileName] = useState('');
-  const [listvalue, setValue] = useState('');
+  const [selectedProfileName, setSelectedProfileName] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
+  const [listvalue, setListValue] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
   const navigate = useNavigate();
-
-
+  let mainUser=profiles.find(profile => profile.uid === profiles.uid).p_name;
+  // console.log('SelectedProfile', selectedProfileName)
+  // console.log('MainUser',mainUser)
 
   const calculateAge = (dob) => {
     const dobDate = new Date(dob);
@@ -34,75 +35,106 @@ function ProfilePage() {
     return age;
   };
 
-  const handleProfileChange = (e) => {  
-    setValue(e.target.value);
+  const handleProfileChange = (e) => { 
+      
+    setListValue(e.target.value);
     const selectedProfile = profiles.find(profile => profile.p_name === e.target.value);
-    if (selectedProfile) {
-      setSelectedProfileAge(calculateAge(selectedProfile.p_dob));
-      setSelectedProfileName(selectedProfile.p_name);
-    } else {
-      setSelectedProfileAge(calculateAge(profiles.find(profile => profile.uid === profiles.uid).p_dob)); // Reset age if no profile selected
-      setSelectedProfileName(profiles.find(profile => profile.uid === profiles.uid).p_name);
-    }
+    console.log('SelectedProfile',selectedProfile)
+    setSelectedProfileAge(calculateAge(selectedProfile.p_dob));
+    setSelectedProfileName(e.target.value);   
+    //}
+    //console.log(profiles.find(profile => profile.u_id === profiles.uid).p_name); 
   };
 
-
-
-
+  
   const deleteChildUser = async () => {
-    setError('');
-    setDeletingChildUser(true);
-  
-    try {
-      const response = await axios.post(`${API_URL}/del-profile/`, {
-        u_id: uid,
-        p_name: selectedProfileName
-      });
-      console.log(response)
-      if (response.status === 202) {
-        // Remove the deleted profile from the profiles array
-        
-        setProfiles(response.data["profile"]);
-        setDeleteMessage(true);
-        setTimeout(() => setDeleteMessage(false), 3000);
+    let is400Error = false;
+    if (profiles.length === 1) {
+      setSuccessMessage(true);
+      setErrorMessage(`Main user can't be deleted`)
+      setTimeout(() => setSuccessMessage(false), 3000);
+      return;
+    } else {
+      setError('');
+      setDeletingChildUser(true);
+      try {
+        const response = await axios.post(`${API_URL}/del-profile/`, {
+          u_id: uid,
+          p_name: selectedProfileName
+        });
+        if (response.status === 202) {
+          // Remove the deleted profile from the profiles array
+          setProfiles(response.data["profile"]);
+          setSuccessMessage(true);
+          setErrorMessage('Username deleted successfully.')
+          setTimeout(() => setSuccessMessage(false), 3000);
+        }
+        if (response.status === 226) {
+          setSuccessMessage(true);
+          setErrorMessage(`Main user can't be deleted`)
+          setTimeout(() => setSuccessMessage(false), 3000);
+          let is400Error=true;
+        }
+      } catch (error) {
+        setError(error)
+      } finally {
+        if (is400Error) {
+          setDeletingChildUser(true); // Set to true if 400 error occurred
+        } else {
+          setDeletingChildUser(false);
+        }
       }
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setDeletingChildUser(false);
     }
   };
   
-
-
-
-
-
+  
+  
   const handleAddChildUser = async () => {
     setError('');
     setAddingChildUser(true);
-
+  
+    let is400Error = false; // Flag to indicate if a 400 error occurred
+    
     try {
       const response = await axios.post(`${API_URL}/add-profile/`, {
         u_id: uid, // Assuming the first profile in the array is the parent profile
         p_name: newChildUsername,
         p_dob: newChildDOB,
       });
-      
+      console.log(response)
       if (response.status === 201) {
-       
+        setListValue(newChildUsername);
+        setSelectedProfileAge(calculateAge(newChildDOB)); 
         setProfiles(response.data["profile"]);
         setNewChildUsername('');
         setNewChildDOB('');
         setSuccessMessage(true); // Set to true to display the success message
+        setErrorMessage('Username created successfully.'); // Set
         setTimeout(() => setSuccessMessage(false), 3000);
       }
-    } catch (error) {
-      setError(error.message);
+      if (response.status === 226) {
+        setSuccessMessage(true);
+        setErrorMessage(`Invalid Age, please try again(age is below 5)`)
+        setTimeout(() => setSuccessMessage(false), 3000);
+        setError(error) // Store the error response data for further use
+        is400Error = true; // Set flag to true if 400 error occurred
+      }
+    } catch (error) {  
+        console.error( error);
+        setSuccessMessage(true);
+        //setErrorMessage('An unexpected error occurred. Please try again later.');
+        setTimeout(() => setSuccessMessage(false), 3000);
     } finally {
-      setAddingChildUser(false);
+    
+      if (is400Error) {
+        setAddingChildUser(true); // Set to true if 400 error occurred
+      } else {
+        setAddingChildUser(false);
+      }
     }
   };
+  
+  
 
   return (
     <div className="profile-page-container">
@@ -143,22 +175,13 @@ function ProfilePage() {
           <button onClick={handleAddChildUser} disabled={!addingChildUser}>
             Add
           </button>
-          {error && <p className="error-message">{error}</p>}
+          
         </div>
       )}
 
       {/* Pop-up message for success */}
-      {successMessage && <PopupMessage message={`Username created successfully.`} />}
-      {deleteMessage && <PopupMessage message={`Username deleted successfully.`} />}
-
-      {deletingChildUser &&  (
-        <>
-  
-        </>
-      )}
-
-
-
+      {successMessage && <PopupMessage message={errorMessage} />}
+      
     </div>
    
   );
