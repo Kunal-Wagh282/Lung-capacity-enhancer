@@ -20,5 +20,6 @@ class User(models.Model):
 
 class Profile(models.Model):
     u_id = models.IntegerField()
+    p_id = models.IntegerField(default=get_id,unique=True)
     p_name = models.CharField(max_length = 50)
     p_dob  = models.DateField(auto_now=False, auto_now_add=False)

@@ -7,4 +7,6 @@ urlpatterns = [
     path('display/',views.display),
     path('add-profile/', views.AddProfile.as_view()),
     path('del-profile/', views.DelProfile.as_view()),
+    path('bt-connect/', views.ConnectBT.as_view()),
+    path('bt-disconnect/', views.DisconnectBT.as_view())
 ]

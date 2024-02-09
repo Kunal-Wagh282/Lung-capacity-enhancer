@@ -7,6 +7,13 @@ from rest_framework import generics,status
 from.serializers import*
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from datetime import datetime
+import bluetooth
+import time
+
+hc05_address = "00:00:13:00:11:23" 
+global sock
+sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
 # Create your views here.
 
@@ -22,6 +29,14 @@ class Register(APIView):
             l_name = serializer.data.get("l_name")
             dob = serializer.data.get("dob")
             password = serializer.data.get('password')
+            
+            dob_date = datetime.strptime(dob, "%Y-%m-%d")
+            today = datetime.today()
+            age = today.year - dob_date.year - ((today.month, today.day) < (dob_date.month, dob_date.day))
+
+            if age < 5:
+                return Response({"error": "User's age must be at least 5 years old"}, status=status.HTTP_400_BAD_REQUEST)
+
             queryset = User.objects.filter (username = username)
             if queryset.exists():
                 return Response(serializer.errors, status=status.HTTP_226_IM_USED)
@@ -73,6 +88,12 @@ class AddProfile(APIView):
             u_id = serializer.data.get('u_id')
             p_name = serializer.data.get('p_name')
             p_dob = serializer.data.get('p_dob')
+            dob_date = datetime.strptime(p_dob, "%Y-%m-%d")
+            today = datetime.today()
+            age = today.year - dob_date.year - ((today.month, today.day) < (dob_date.month, dob_date.day))
+
+            if age < 5:
+                return Response({"error": "User's age must be at least 5 years old"}, status=status.HTTP_226_IM_USED)
             queryset = Profile.objects.filter(p_name=p_name,u_id=u_id)
             if queryset.exists():
                 return Response({'error' : 'Profile name alredy There ','u_id':u_id},status=status.HTTP_226_IM_USED)
@@ -91,6 +112,9 @@ class DelProfile(APIView):
         if serializer.is_valid():
             u_id = serializer.data.get('u_id')
             p_name = serializer.data.get('p_name')
+            if p_name == User.objects.filter(u_id=u_id).first().f_name:
+                return Response({'error': 'Main Profile, cannot be deleted'},status=status.HTTP_226_IM_USED)
+
             del_queryset = Profile.objects.filter(u_id=u_id,p_name=p_name)
             if del_queryset.exists():
                 del_queryset.delete()
@@ -101,6 +125,24 @@ class DelProfile(APIView):
                 
         else:
             return Response(serializer.errors,status=status.HTTP_406_NOT_ACCEPTABLE)
+        
+class ConnectBT(APIView):
+    def post(self, request, fromat= None):
+        try:
+            sock.connect((hc05_address, 1))  # Use channel 1 for serial communication
+            return Response({'success':'Connected'},status=status.HTTP_200_OK)
+        except bluetooth.BluetoothError as e:
+            return Response({'error': 'Bluetooth Error'},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        
+class DisconnectBT(APIView):
+    def post(self, request, fromat= None):
+        try:
+            sock.close()
+            sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+            return Response({'success':'Disconnected'},status=status.HTTP_200_OK)
+        except bluetooth.BluetoothError as e:
+            return Response({'error': 'Bluetooth Error'},status=status.HTTP_401_UNAUTHORIZED)
+
 
 def display(request):
     st=User.objects.all() 
