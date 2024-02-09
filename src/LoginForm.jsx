@@ -4,7 +4,7 @@ import TextInput from './TextInput';
 import DateInput from './DateInput';
 import SubmitButton from './SubmitButton';
 import './LoginForm.css' // Import the CSS file
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,Link } from 'react-router-dom';
 import API_URL from './config'; // Import the API URL
 
 
@@ -20,13 +20,6 @@ function LoginForm() {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    
-
-    
-
-
-
     try {
       const response = await axios.post(`${API_URL}/login/`, {
         username: username,
@@ -45,7 +38,9 @@ function LoginForm() {
       }
        // assuming the server sends back some response
     } catch (error) {
-      setError(error.message);
+      setError('Invalid Username or Password...Try Again');
+      setUsername('');
+      setPassword('');
     }
 
     setLoading(false);
@@ -71,6 +66,7 @@ function LoginForm() {
         
         <SubmitButton loading={loading} text="Login" />
       </form>
+      <p>Don't have an account? <Link to="/">Register</Link></p>
     </div>
   );
 }
