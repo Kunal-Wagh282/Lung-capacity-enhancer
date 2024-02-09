@@ -79,7 +79,7 @@ class AddProfile(APIView):
             else:
                 profile = Profile(p_name=p_name,u_id = u_id, p_dob = p_dob)
                 profile.save()
-                return Response({'u_id':u_id,"profile ":ProfileSerializer(Profile.objects.filter(u_id=u_id),many = True).data},status=status.HTTP_201_CREATED)         
+                return Response({'u_id':u_id,"profile":ProfileSerializer(Profile.objects.filter(u_id=u_id),many = True).data},status=status.HTTP_201_CREATED)         
         else:
             return Response(serializer.errors,status=status.HTTP_406_NOT_ACCEPTABLE)
 
@@ -94,7 +94,7 @@ class DelProfile(APIView):
             del_queryset = Profile.objects.filter(u_id=u_id,p_name=p_name)
             if del_queryset.exists():
                 del_queryset.delete()
-                return Response({'u_id':u_id,"profile ":ProfileSerializer(Profile.objects.filter(u_id=u_id),many = True).data},status=status.HTTP_202_ACCEPTED)
+                return Response({'u_id':u_id,"profile":ProfileSerializer(Profile.objects.filter(u_id=u_id),many = True).data},status=status.HTTP_202_ACCEPTED)
                 
             else:
                 return Response({'error': 'Profile not found'},status=status.HTTP_404_NOT_FOUND)
@@ -103,6 +103,6 @@ class DelProfile(APIView):
             return Response(serializer.errors,status=status.HTTP_406_NOT_ACCEPTABLE)
 
 def display(request):
-    st=User.objects.all() # Collect all records from table 
+    st=User.objects.all() 
     return render(request,'display.html',{'st':st})
 
