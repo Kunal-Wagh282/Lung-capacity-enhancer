@@ -25,12 +25,7 @@ function BleButton() {
             setSuccessMessage(true);
             setErrorMessage('Error connecting to Bluetooth.');
             setTimeout(() => setSuccessMessage(false), 5000); // Display the message for 3 seconds before hiding it.
-            console.error(error);
-            setSuccessMessage(true);
-            setErrorMessage('Error connecting to Bluetooth.');
-            setTimeout(() => setSuccessMessage(false), 5000); 
         }
-        
     }
 
     const disconnectBle = async () => { 
