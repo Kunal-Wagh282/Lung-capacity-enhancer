@@ -8,31 +8,25 @@ function BleButton() {
     const [isConnected, setIsConnected] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-{
 
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-    
-
-
-
+    const connectBle = async () => { 
+        try {
+            const response = await axios.post(`${API_URL}/bt-connect/`);
+            console.log(response);
+            if (response.status === 200) {
+                setIsConnected(true);
+                setSuccessMessage(true);
+                setErrorMessage('Bluetooth connected successfully.');
+                setTimeout(() => setSuccessMessage(false), 3000); // Display the message for 3 seconds before hiding it.
+            }
+        } 
+        catch (error) {  
+            console.error(error);
+            setSuccessMessage(true);
+            setErrorMessage('Error connecting to Bluetooth.');
+            setTimeout(() => setSuccessMessage(false), 3000); // Display the message for 3 seconds before hiding it.
+        }
+    }
 
     const disconnectBle = async () => { 
         try {
