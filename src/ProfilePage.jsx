@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate ,Link} from 'react-router-dom';
-import './ProfilePage.css';
+import './ProfilePage.css'; 
 import API_URL from './config'; // Import the API URL
 import PopupMessage from './PopupMessage';
 import BleButton from './BleButton';
