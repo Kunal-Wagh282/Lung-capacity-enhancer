@@ -5,6 +5,7 @@ import ProfilePage from './ProfilePage';
 import RegistrationForm from './RegistrationForm';
 import Try from './try';
 
+
 function App() {
   return (
     <BrowserRouter>

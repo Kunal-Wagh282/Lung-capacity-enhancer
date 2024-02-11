@@ -4,7 +4,7 @@ import TextInput from './TextInput';
 import DateInput from './DateInput';
 import SubmitButton from './SubmitButton';
 import PopupMessage from './PopupMessage'; // Import the PopupMessage component
-import './LoginForm.css'; // Import the CSS file
+import './RegistrationForm.css'; // Import the CSS file
 import { Link, useNavigate } from 'react-router-dom';
 import API_URL from './config'; // Import the API URL
 

@@ -46,7 +46,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="registration-form-container"> {/* Apply the CSS class */}
+    <div className="login-form-container"> {/* Apply the CSS class */}
       <h2>Login Form</h2>
       {error && <p className="error-message">{error}</p>} {/* Apply the CSS class */}
       <form onSubmit={handleSubmit}>

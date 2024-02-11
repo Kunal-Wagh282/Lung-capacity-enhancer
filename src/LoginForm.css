@@ -1,13 +1,5 @@
-/* RegistrationForm.css */
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-
-.registration-form-container {
+/* LoginForm.css */
+.login-form-container {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
@@ -18,19 +10,19 @@
     
   }
   
-  .registration-form-container h2 {
+  .login-form-container h2 {
     margin-bottom: 20px;
     color:#0056b3;
   }
   
-  .registration-form-container label {
+  .login-form-container label {
     display: block;
     margin-bottom: 10px;
   }
   
-  .registration-form-container input[type="text"],
-  .registration-form-container input[type="password"],
-  .registration-form-container input[type="date"] {
+  .login-form-container input[type="text"],
+  .login-form-container input[type="password"],
+  .login-form-container input[type="date"] {
     width: calc(100% - 22px); /* Adjust width to accommodate padding and border */
     padding: 10px;
     margin-bottom: 15px;
@@ -38,7 +30,7 @@
     border-radius: 3px;
   }
   
-  .registration-form-container button[type="submit"] {
+  .login-form-container button[type="submit"] {
     width: 100%;
     padding: 10px;
     background-color: #007bff;
@@ -48,11 +40,8 @@
     cursor: pointer;
   }
   
-  .registration-form-container button[type="submit"]:hover {
+  .login-form-container button[type="submit"]:hover {
     background-color: #0056b3;
   }
   
-  .form{
-    color:aqua;
-    color:rebeccapurple;
-  }
+ 
