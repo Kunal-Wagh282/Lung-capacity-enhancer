@@ -8,8 +8,9 @@ from.serializers import*
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime
+import json
+import numpy as np
 
-import time
 
 
 # Create your views here.
@@ -90,7 +91,7 @@ class AddProfile(APIView):
             age = today.year - dob_date.year - ((today.month, today.day) < (dob_date.month, dob_date.day))
 
             if age < 5:
-                return Response({"error": "User's age must be at least 5 years old"}, status=status.HTTP_226_IM_USED)
+                return Response({"error": "User's age must be at least 5 years old"}, status=status.HTTP_204_NO_CONTENT)
             queryset = Profile.objects.filter(p_name=p_name,u_id=u_id)
             if queryset.exists():
                 return Response({'error' : 'Profile name alredy There ','u_id':u_id},status=status.HTTP_226_IM_USED)
@@ -119,26 +120,54 @@ class DelProfile(APIView):
                 
             else:
                 return Response({'error': 'Profile not found'},status=status.HTTP_404_NOT_FOUND)
-                
+                 
         else:
             return Response(serializer.errors,status=status.HTTP_406_NOT_ACCEPTABLE)
-        
-class ConnectBT(APIView):
-    def post(self, request, fromat= None):
-        try:
-            return Response({'success':'Connected'},status=status.HTTP_200_OK)
-        except bluetooth.BluetoothError as e:
-            return Response({'error': 'Bluetooth Error'},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-        
-class DisconnectBT(APIView):
-    def post(self, request, fromat= None):
-        try:
-            return Response({'success':'Disconnected'},status=status.HTTP_200_OK)
-        except bluetooth.BluetoothError as e:
-            return Response({'error': 'Bluetooth Error'},status=status.HTTP_401_UNAUTHORIZED)
+    
+class GraphDataSave(APIView):
+    serializer_class = GraphDataReceiveSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            u_id = serializer.validated_data['u_id']
+            p_name = serializer.validated_data['p_name']
+            p_id = Profile.objects.filter(u_id=u_id, p_name=p_name).first().p_id
+            time_array = serializer.validated_data['time_array']
+            volume_array = serializer.validated_data['volume_array']
+
+            # Convert time_array and volume_array to JSON serializable types
+            time_array_serializable = list(map(float, time_array))
+            volume_array_serializable = list(map(float, volume_array))
+
+            area_under_curve = np.trapz(time_array_serializable, volume_array_serializable)
+
+            graph_data = GraphDatabase.objects.create(
+                u_id=u_id,
+                p_name=p_name,
+                p_id=p_id,
+                time_array=time_array_serializable,
+                volume_array=volume_array_serializable
+            )
+
+            return Response({"area": np.abs(area_under_curve)}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class TestAPIView(APIView):
+#     serializer_class = TestSerializer
+
+#     def post(self, request, format=None):
+#         serializer = self.serializer_class(data=request.data)
+#         if serializer.is_valid():
+#             array_data = serializer.validated_data
+#             test_instance = test.objects.create(array=array_data.get('array'))
+#             return Response(TestSerializer(test_instance).data, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def display(request):
-    st=User.objects.all() 
+    st=Profile.objects.all() 
+    Profile.objects.all().delete()
+    User.objects.all().delete()
     return render(request,'display.html',{'st':st})
 

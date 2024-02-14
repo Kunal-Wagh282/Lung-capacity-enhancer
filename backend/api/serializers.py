@@ -27,3 +27,18 @@ class ProfileDelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['u_id','p_name']
+
+class GraphDataReceiveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GraphDatabase
+        fields =['u_id','p_name','time_array','volume_array']
+
+class GraphDataSendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GraphDatabase
+        fields =['u_id','p_name','time_array','v0lume_array','date']
+
+# class TestSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = test
+#         fields = ['array']

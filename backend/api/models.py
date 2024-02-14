@@ -23,3 +23,16 @@ class Profile(models.Model):
     p_id = models.IntegerField(default=get_id,unique=True)
     p_name = models.CharField(max_length = 50)
     p_dob  = models.DateField(auto_now=False, auto_now_add=False)
+
+
+class GraphDatabase(models.Model):
+    u_id = models.IntegerField()
+    p_id = models.IntegerField()
+    p_name = models.CharField(max_length = 50)
+    time_array = models.JSONField()
+    volume_array = models.JSONField()
+    date = models.DateField(auto_now=True)
+
+    
+# class test(models.Model):
+#     array = models.JSONField()
