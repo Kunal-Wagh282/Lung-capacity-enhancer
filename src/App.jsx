@@ -3,7 +3,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import ProfilePage from './ProfilePage';
 import RegistrationForm from './RegistrationForm';
-import Try from './try';
+import Try from './Try';
+import Try2 from './Try2';
 
 
 function App() {
@@ -14,6 +15,9 @@ function App() {
         <Route path="/login" exact element={<LoginForm/>} />
         <Route path="/profiles" element={<ProfilePage/>} />
         <Route path="/try" element={<Try/>} />
+        <Route path="/try2" element={<Try2/>} />
+
+        
 
       </Routes>
     </BrowserRouter>

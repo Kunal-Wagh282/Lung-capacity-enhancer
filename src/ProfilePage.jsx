@@ -97,7 +97,6 @@ function ProfilePage() {
         p_name: newChildUsername,
         p_dob: newChildDOB,
       });
-      console.log(response)
       if (response.status === 201) {
         setListValue(newChildUsername);
         setSelectedProfileAge(calculateAge(newChildDOB)); 
@@ -108,15 +107,22 @@ function ProfilePage() {
         setErrorMessage('Username created successfully.');
         setTimeout(() => setSuccessMessage(false), 3000);
       }
-      if (response.status === 226) {
+      if (response.status === 204) {
         setSuccessMessage(true);
         setErrorMessage(`Invalid Age, please try again(age must be above 5)`)
         setTimeout(() => setSuccessMessage(false), 3000);
         setError(error)
         is400Error = true;
       }
+      if (response.status === 226) {
+        setSuccessMessage(true);
+        setNewChildUsername('');
+        setErrorMessage(`Username already exists, please try different username.`)
+        setTimeout(() => setSuccessMessage(false), 3000);
+        is400Error = true;
+      }
+
     } catch (error) {  
-        console.error( error);
         setSuccessMessage(true);
         setTimeout(() => setSuccessMessage(false), 3000);
     } finally {
