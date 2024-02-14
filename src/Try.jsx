@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto';
-import PopupMessage from './PopupMessage'; // Import the PopupMessage component
+import React, { useState, useEffect } from 'react';
+
+import PopupMessage from './Components/PopupMessage'; // Import the PopupMessage component
+import LineGraph from './Components/LineGraph';
 import './Try.css';
 import axios from 'axios';
 
@@ -11,8 +12,8 @@ function Try() {
   const [characteristic, setCharacteristic] = useState(null);
   const [time, setTime] = useState([0.00]);
   const [volumePerSecond, setVolumePerSecond] = useState([0.00]);
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
+  
+  
   const [showSuccessPopup, setShowSuccessPopup] = useState(false); // State to control the visibility of success popup
   const [error, setError] = useState('');
 
@@ -110,50 +111,7 @@ function Try() {
     setVolumePerSecond([0.00]);
   };
 
-  useEffect(() => {
-    if (chartRef.current) {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-      }  
-      const ctx = chartRef.current.getContext('2d');
-      chartInstance.current = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: time,
-          datasets: [{
-            label: 'Volume per second',
-            data: volumePerSecond,
-            borderColor: 'rgb(75, 192, 192)'
-         
-          }]
-        },
-        options: {
-          scales: {
-            x: {
-              beginAtZero: true,
-              type: 'linear',
-              position: 'bottom',
-              min: 0,
-              title: {
-                display: true,
-                text: 'Time',
-                tension:1
-              }
-            },
-            y: {
-              beginAtZero: true,
-              min: 0,
-              title: {
-                display: true,
-                text: 'Volume per second',
-                tension: 0.1
-              }
-            }
-          }
-        }
-      });
-    }
-  }, [time, volumePerSecond]); 
+ 
   return (
     <>
       <button className="bluetooth" onClick={connectToDevice}>CONNECT</button>
@@ -161,7 +119,7 @@ function Try() {
       {device && <p>Connected to: {device.name}</p>}
       {showSuccessPopup && (<PopupMessage message={error}/>)}
       <div className='chart-canvas'>
-      <canvas ref={chartRef}  style={{ width: '200px', height: '200px' }}   />
+      <LineGraph time={time} volumePerSecond={volumePerSecond}/>
       </div>
     </>
   );

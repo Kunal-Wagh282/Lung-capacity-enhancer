@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PopupMessage from './PopupMessage'; // Import the PopupMessage component
+import PopupMessage from './Components/PopupMessage'; // Import the PopupMessage component
 import './RegistrationForm.css'; // Import the CSS file
 import { Link, useNavigate } from 'react-router-dom';
 import API_URL from './config'; // Import the API URL

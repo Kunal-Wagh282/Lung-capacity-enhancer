@@ -3,9 +3,9 @@ import axios from 'axios';
 import { useLocation, useNavigate ,Link} from 'react-router-dom';
 import './ProfilePage.css'; 
 import API_URL from './config'; // Import the API URL
-import PopupMessage from './PopupMessage';
-import BleButton from './BleButton';
-import Modal from './Modal'; // Import your modal component
+import PopupMessage from './Components/PopupMessage';
+import BleButton from './Components/BleButton';
+import Modal from './Components/Modal'; // Import your modal component
 
 function ProfilePage() {
   const { state } = useLocation();
@@ -18,7 +18,6 @@ function ProfilePage() {
   const [errorMessage,setErrorMessage] = useState('');
   const [selectedProfileAge, setSelectedProfileAge] = useState(null);
   const [selectedProfileName, setSelectedProfileName] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
-  const [listvalue, setListValue] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
   const [addingChildUser, setAddingChildUser] = useState(false);
   //console.log(profiles);
   useEffect(()=>{
@@ -47,8 +46,6 @@ function ProfilePage() {
   };
 
   const handleProfileChange = (e) => { 
-      
-    setListValue(e.target.value);
     const selectedProfile = profiles.find(profile => profile.p_name === e.target.value);
     setSelectedProfileAge(calculateAge(selectedProfile.p_dob));
     setSelectedProfileName(e.target.value);   
@@ -100,11 +97,12 @@ function ProfilePage() {
         p_dob: newChildDOB,
       });
       if (response.status === 201) {
-        setListValue(newChildUsername);
+        setSelectedProfileName(newChildUsername);
         setSelectedProfileAge(calculateAge(newChildDOB)); 
         setProfiles(response.data["profile"]);
         setNewChildUsername('');
         setNewChildDOB('');
+    
         setSuccessMessage(true);
         setErrorMessage('Username created successfully.');
         setTimeout(() => setSuccessMessage(false), 3000);
@@ -141,7 +139,7 @@ function ProfilePage() {
       <h2>Dashboard</h2>
       {profiles.length > 0 && (
         <div>
-          <select className="dropdown-select" value={listvalue} onChange={handleProfileChange}>
+          <select className="dropdown-select" value={selectedProfileName} onChange={handleProfileChange}>
             {profiles.map((profile, index) => (
               <option className="dropdown-option" key={index} value={profile.p_name}>
                 {profile.p_name}   

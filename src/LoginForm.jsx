@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import TextInput from './TextInput';
-import SubmitButton from './SubmitButton';
+import TextInput from './Components/TextInput';
+import SubmitButton from './Components/SubmitButton';
 import './LoginForm.css' // Import the CSS file
 import { useNavigate ,Link } from 'react-router-dom';
 import API_URL from './config'; // Import the API URL
