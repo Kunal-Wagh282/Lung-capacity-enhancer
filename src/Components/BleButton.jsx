@@ -5,7 +5,7 @@ import API_URL from './config'; // Import the API URL
 import PopupMessage from './PopupMessage';
 import './BleButton.css';
 
-function BleButton() {
+function BleButton({uid,name}) {
     const [isConnected, setIsConnected] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -65,6 +65,8 @@ function BleButton() {
           setError('');
           try {
             const response = await axios.post(`${API_URL}/test/`, {
+              uid:uid,
+              p_name:name,
               time_array: time,
               volume_array: volumePerSecond
             });

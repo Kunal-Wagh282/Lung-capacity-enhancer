@@ -52,6 +52,8 @@ function ProfilePage() {
     const selectedProfile = profiles.find(profile => profile.p_name === e.target.value);
     setSelectedProfileAge(calculateAge(selectedProfile.p_dob));
     setSelectedProfileName(e.target.value);   
+    //console.log("Name",selectedProfileName)
+    //console.log("UID", uid)
   };
 
   
@@ -154,7 +156,7 @@ function ProfilePage() {
      <Modal isOpen={addingChildUser} onClose={() => setAddingChildUser(false)} newChildUsername={newChildUsername} setNewChildUsername={setNewChildUsername} newChildDOB={newChildDOB} setNewChildDOB={setNewChildDOB} handleAddChildUser={handleAddChildUser} />
 
       {successMessage && <PopupMessage message={errorMessage} />}
-      <BleButton/><br/>
+      <BleButton uid={uid} name={selectedProfileName}/><br/>
       <button><Link to="/login">Logout</Link></button>
     </div>
   );
