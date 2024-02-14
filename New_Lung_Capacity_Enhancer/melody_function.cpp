@@ -76,30 +76,38 @@ void start(int BUZZER_PIN)// Function to play the starting melody
 
 void tune(int s, int BUZZER_PIN, float l1, float l2, float l3, float l4, float l5){
   // Play different sounds based on the achieved level   
-          if(s >= l5)
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          tone(BUZZER_PIN,NOTE_G5 , 400);delay(100);
-          tone(BUZZER_PIN,NOTE_A5 , 600);delay(100);
-          tone(BUZZER_PIN,NOTE_B5, 800);delay(100);
-          tone(BUZZER_PIN,NOTE_C5 , 1000);delay(100);noTone(BUZZER_PIN);} 
-          else if(s < l5 && s >= l4)
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          tone(BUZZER_PIN,NOTE_G5 , 400);delay(100);
-          tone(BUZZER_PIN,NOTE_A5 , 600);delay(100);
-          tone(BUZZER_PIN,NOTE_B5, 800);delay(100);
-          noTone(BUZZER_PIN);}
-          else if(s < l4 && s >= l3)
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          tone(BUZZER_PIN,NOTE_G5 , 400);delay(100);
-          tone(BUZZER_PIN,NOTE_A5 , 600);delay(100);
-          noTone(BUZZER_PIN);}
-          else if(s < l2 && s >=l1)
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          noTone(BUZZER_PIN);}
-          else
-          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(100);
-          tone(BUZZER_PIN,NOTE_G5 , 400);delay(100);
-          noTone(BUZZER_PIN);}
+  int c=-1,i;
+  if(s >= l5){c=5;}
+  else if(s < l5 && s >= l4){c=4;}
+  else if(s < l4 && s >= l3){c=3;}
+  else if(s < l3 && s >= l2){c=2;}
+  else if(s < l2 && s >=l1){c=1;}
+  for(i=0;i<c;i++){
+          if(s >= l5)//5 lights
+          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(200);
+          tone(BUZZER_PIN,NOTE_G5 , 400);delay(200);
+          tone(BUZZER_PIN,NOTE_A5 , 600);delay(200);
+          tone(BUZZER_PIN,NOTE_B5, 800);delay(200);
+          tone(BUZZER_PIN,NOTE_C5 , 1000);delay(200);
+          noTone(BUZZER_PIN);delay(100);} 
+          else if(s < l5 && s >= l4)//4 lights
+          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(200);
+          tone(BUZZER_PIN,NOTE_G5 , 400);delay(200);
+          tone(BUZZER_PIN,NOTE_A5 , 600);delay(200);
+          tone(BUZZER_PIN,NOTE_B5, 800);delay(200);
+          noTone(BUZZER_PIN);delay(100);}
+          else if(s < l4 && s >= l3)//3 lights
+          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(200);
+          tone(BUZZER_PIN,NOTE_G5 , 400);delay(200);
+          tone(BUZZER_PIN,NOTE_A5 , 600);delay(200);
+          noTone(BUZZER_PIN);delay(100);}
+          else if(s < l2 && s >=0)//1 lights
+          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(200);
+          noTone(BUZZER_PIN);delay(100);}
+          else if(s < l3 && s >= l2)//2 lights
+          {tone(BUZZER_PIN,NOTE_F5 , 200);delay(200);
+          tone(BUZZER_PIN,NOTE_G5 , 400);delay(200);
+          noTone(BUZZER_PIN);delay(100);}
           
-  
+  }     
   }
