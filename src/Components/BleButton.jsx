@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Chart from 'chart.js/auto';
-import API_URL from './config'; // Import the API URL
+import API_URL from '../config'; // Import the API URL
 import PopupMessage from './PopupMessage';
 import './BleButton.css';
 
