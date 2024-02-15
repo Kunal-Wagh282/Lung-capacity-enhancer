@@ -5,13 +5,16 @@ import PopupMessage from './PopupMessage';
 import './BleButton.css';
 import LineGraph from './LineGraph';
 
-function BleButton({uid,name}) {
+function BleButton({uid,name,age}) {
     const [isConnected, setIsConnected] = useState(false);
     const [device, setDevice] = useState(null);
     const [time, setTime] = useState([0.00]);
     const [volumePerSecond, setVolumePerSecond] = useState([0.00]);
     const [showSuccessPopup, setShowSuccessPopup] = useState(false); // State to control the visibility of success popup
     const [error, setError] = useState('');
+    const [characteristic, setCharacteristic] = useState(null);
+    const [server, setServer] = useState(null);
+    const [service, setService] = useState(null);
     const [totalVolume, setTotalVolume] = useState(0);
     
     const connectToDevice = async () => {
@@ -23,7 +26,7 @@ function BleButton({uid,name}) {
           setDevice(device);
     
           const server = await device.gatt.connect();
-          (server);
+          setServer(server);
     
           device.addEventListener('gattserverdisconnected', onDisconnected);
     
@@ -33,18 +36,21 @@ function BleButton({uid,name}) {
             setTimeout(() => setShowSuccessPopup(false), 3000);
             setIsConnected(true)
             const service = await server.getPrimaryService('0000fffe-0000-1000-8000-00805f9b34fb');
-    
+            setService(service);
             const characteristic = await service.getCharacteristic('0000fffc-0000-1000-8000-00805f9b34fb');
-    
+            setCharacteristic(characteristic);
             await characteristic.startNotifications();
             characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
+            if(age<10){var data=String('0'+age);}
+            else{var data = String(age);}
+            await characteristic.writeValue(new TextEncoder().encode(data));
+            
           } else {
             console.error('Device disconnected.');
-            alert('Device disconnected')
+            alert('Device disconnected1')
           }
         } catch (error) {
-          console.error('Error connecting to device:', error);
-          alert('Error Connecting to device...please try again!')
+          console.log(error)
         }
       };
     
@@ -56,8 +62,28 @@ function BleButton({uid,name}) {
         setTime(prevTime => [...prevTime, receivedTime]);
         setVolumePerSecond(prevVolume => [...prevVolume, receivedVolume]);
         
-      };
-      console.log(" Original Time", time)
+  };
+     
+    useEffect(()=>{
+      if(isConnected) {
+        const sendData = async () => {
+          try{
+            if(age<10){
+              var data=String('0'+age);
+            }else{
+            var data = String(age);}
+            await characteristic.writeValue(new TextEncoder().encode(data));         
+          }
+          catch(error){       
+          }
+    }
+    sendData(); // Invoke the async function to execute
+    }
+    },[name]);
+
+
+
+
       useEffect(() => {
           if (time.length!==1 && time[time.length - 1] === 0 ) {
         time.pop();
@@ -69,7 +95,6 @@ function BleButton({uid,name}) {
         const sendData = async () => { // Define async function
           setError('');
           try {
-    
             const response = await axios.post(`${API_URL}/graph-data/`, {
               u_id:uid,
               p_name:name,
@@ -81,22 +106,19 @@ function BleButton({uid,name}) {
               setError('Data shared successfully!!');
               setTimeout(() => setShowSuccessPopup(false), 3000);
             }
-            console.log(response); // Log response here
+            setTotalVolume(response.data["area"]);
           } catch (error) {
             console.error('Error sending data:', error);
           }
-          console.log("Time before resetting data:", time)
         setTime([0.00]);
         setVolumePerSecond([0.00]);
-        console.log("Time after resetting data:", time)
         };
         sendData(); // Invoke the async function to execute
       }
-      },[handleCharacteristicValueChanged]);
+      },[time]);
 
 
-      console.log(" Original Time after hook", time)
-
+      
 
 
     
@@ -108,6 +130,8 @@ function BleButton({uid,name}) {
             await device.gatt.disconnect();
             setDevice(null);
             setTime([0.00]);
+            setServer(null);
+            setService(null);
             setVolumePerSecond([0.00]);
             setIsConnected(false);
           }
@@ -118,6 +142,8 @@ function BleButton({uid,name}) {
       const onDisconnected = (event) => {
         alert("Device Disconnected");
         setDevice(null);
+        setServer(null);
+        setService(null);
         setTime([0.00]);
         setVolumePerSecond([0.00]);
         setIsConnected(false);
@@ -135,7 +161,7 @@ function BleButton({uid,name}) {
       {showSuccessPopup && (<PopupMessage message={error}/>)}
       <div className='chart-canvas'>
       <LineGraph time={time} volumePerSecond={volumePerSecond}/>
-      {<h2>Total Volume:{totalVolume}</h2>}
+      {<h2>Total Volume: {totalVolume} Liters</h2>}
          </div>
         </>
     );

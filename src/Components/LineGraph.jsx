@@ -5,6 +5,7 @@ function LineGraph({time,volumePerSecond}) {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
     useEffect(() => {
+      
         if (chartRef.current) {
           if (chartInstance.current) {
             chartInstance.current.destroy();
@@ -45,7 +46,7 @@ function LineGraph({time,volumePerSecond}) {
             }
           });
         }
-      }, [time, volumePerSecond]); 
+      }, [time]); 
 
     return (
         <div>

@@ -1,9 +1,9 @@
 import React from 'react';
 
-function SubmitButton({ loading, text }) {
+function SubmitButton({ loading, text ,elseText}) {
   return (
     <button type="submit" disabled={loading}>
-      {loading ? 'Registering...' : text}
+      {loading ? elseText : text}
     </button>
   );
 }

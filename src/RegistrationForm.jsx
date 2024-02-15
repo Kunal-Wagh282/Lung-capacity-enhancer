@@ -121,7 +121,7 @@ function RegistrationForm() {
           onChange={(e) => setPassword(e.target.value)}
           id="password"
         />
-        <SubmitButton loading={loading} text="Register" />
+        <SubmitButton loading={loading} text="Register" elseText="Registering..." />
       </form>
       {redirect && (<PopupMessage message={`Username created successfully. Redirecting to login page in ${countdown} seconds...`}/>)}
       {showSuccessPopup && (<PopupMessage message={error}/>)}

@@ -31,7 +31,6 @@ function LoginForm() {
       const userData = response.data;
       console.log(response.data);
       
-      console.log(error);
       if (response.status === 200 || response.status === 204) {
         navigate('/profiles', { state: { uid: userData.u_id, profiles: userData.profile,username: username,password: password } }); // Redirect to the profiles page after successful login
       }
@@ -65,7 +64,7 @@ function LoginForm() {
           id="password"
         />
         
-        <SubmitButton loading={loading} text="Login" />
+        <SubmitButton loading={loading} text="Login" elseText="Logging....."/>
       </form>
       <p>Don't have an account? <Link to="/">Register</Link></p>
     </div>

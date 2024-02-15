@@ -6,6 +6,8 @@ import API_URL from './config'; // Import the API URL
 import PopupMessage from './Components/PopupMessage';
 import BleButton from './Components/BleButton';
 import Modal from './Components/Modal'; // Import your modal component
+import Sidebar from './Components/SideBar'; // Import your modal component
+
 
 function ProfilePage() {
   const { state } = useLocation();
@@ -46,6 +48,7 @@ function ProfilePage() {
   };
 
   const handleProfileChange = (e) => { 
+    
     const selectedProfile = profiles.find(profile => profile.p_name === e.target.value);
     setSelectedProfileAge(calculateAge(selectedProfile.p_dob));
     setSelectedProfileName(e.target.value);   
@@ -135,6 +138,8 @@ function ProfilePage() {
   };
   
   return (
+    <>
+    
     <div className="profile-page-container">
       <h2>Dashboard</h2>
       {profiles.length > 0 && (
@@ -154,9 +159,10 @@ function ProfilePage() {
      <Modal isOpen={addingChildUser} onClose={() => setAddingChildUser(false)} newChildUsername={newChildUsername} setNewChildUsername={setNewChildUsername} newChildDOB={newChildDOB} setNewChildDOB={setNewChildDOB} handleAddChildUser={handleAddChildUser} />
 
       {successMessage && <PopupMessage message={errorMessage} />}
-      <BleButton uid={uid} name={selectedProfileName}/><br/>
-      <button><Link to="/login">Logout</Link></button>
+      <BleButton uid={uid} name={selectedProfileName} age={selectedProfileAge}/><br/>
     </div>
+    <Sidebar name={selectedProfileName}/>
+    </>
   );
 }
 
