@@ -32,7 +32,11 @@ function LoginForm() {
       console.log(response.data);
       
       if (response.status === 200 || response.status === 204) {
-        navigate('/profiles', { state: { uid: userData.u_id, profiles: userData.profile,username: username,password: password } }); // Redirect to the profiles page after successful login
+        userData.username = username;
+        userData.password = password;
+        sessionStorage.setItem('userData', JSON.stringify(userData));
+        navigate('/profiles');
+
       }
        // assuming the server sends back some response
     } catch (error) {

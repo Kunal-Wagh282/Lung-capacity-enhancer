@@ -40,6 +40,7 @@ function SideBar({ name }) { // Receive `name` prop here
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+  
 
   return (
     <div className="App">
@@ -53,10 +54,8 @@ function SideBar({ name }) { // Receive `name` prop here
           <div className="profile-container">
             <Profile name={name}/>
             </div>
-          
-
           {/* Link to Menu item 2 route */}
-          <Link to="/menu-item-2" className="sidebar-position">
+          <Link to="/History" className="sidebar-position">
             <FontAwesomeIcon icon={faHistory} />
             <span>History</span>
           </Link>
