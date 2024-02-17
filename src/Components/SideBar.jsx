@@ -55,7 +55,7 @@ function SideBar({ name }) { // Receive `name` prop here
             <Profile name={name}/>
             </div>
           {/* Link to Menu item 2 route */}
-          <Link to="/History" className="sidebar-position">
+<Link to="/history" className="sidebar-position">
             <FontAwesomeIcon icon={faHistory} />
             <span>History</span>
           </Link>

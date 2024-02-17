@@ -6,8 +6,6 @@ import API_URL from './config'; // Import the API URL
 import PopupMessage from './Components/PopupMessage';
 import Sidebar from './Components/SideBar'; // Import your modal component
 import DrawerComponent from './Components/Drawer'; 
-import DateInput from './Components/DateInput'; 
-
 
 
 function History() {
@@ -22,18 +20,16 @@ function History() {
   const userDataString = sessionStorage.getItem('userData');
   const userData = JSON.parse(userDataString);
   const [profiles, setProfiles] = useState(userData.profile);
-  const [dob, setDOB] = useState('');
-
-  
+  const [uid, setUid] = useState(userData.u_id);
   const [selectedProfileName, setSelectedProfileName] = useState(profiles.find(profile => profile.uid === profiles.uid).p_name);
-const uid = userData.u_id;
-//const profiles = userData.profile;
-const username = userData.username;
-const password = userData.password;
+// const uid = userData.u_id;
+// const profiles = userData.profile;
+// const username = userData.username;
+// const password = userData.password;
 
-useEffect(() => {
-  sessionStorage.setItem('nowName', JSON.stringify(selectedProfileName));
-},[])
+// useEffect(() => {
+//   sessionStorage.setItem('nowName', JSON.stringify(selectedProfileName));
+// },[])
   const calculateAge = (dob) => {
     const dobDate = new Date(dob);
     const today = new Date();
@@ -118,12 +114,6 @@ useEffect(() => {
               ))}
             </select>
           <h2>Age:{(selectedProfileAge === null)? (setSelectedProfileAge(calculateAge(profiles.find(profile => profile.uid === profiles.uid).p_dob))):selectedProfileAge}</h2>
-          <DateInput
-          label="Select Date to get history"
-          value={dob}
-          onChange={(e) => setDOB(e.target.value)}
-          id="dob"
-        />
         </div>
       )}
       <DrawerComponent isOpen={addingChildUser} onClose={() => setAddingChildUser(false)} newChildUsername={newChildUsername} setNewChildUsername={setNewChildUsername} newChildDOB={newChildDOB} setNewChildDOB={setNewChildDOB} handleAddChildUser={handleAddChildUser}/>

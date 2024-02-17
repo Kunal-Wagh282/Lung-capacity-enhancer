@@ -5,6 +5,7 @@ import SubmitButton from './Components/SubmitButton';
 import './LoginForm.css' // Import the CSS file
 import { useNavigate ,Link } from 'react-router-dom';
 import API_URL from './config'; // Import the API URL
+import MediTech from './assets/images/Meditech.png';
 
 
 
@@ -49,16 +50,24 @@ function LoginForm() {
   };
 
   return (
+    <div className = "page-container ">
     <div className="login-form-container"> {/* Apply the CSS class */}
-      <h2>Login Form</h2>
+      
       {error && <p className="error-message">{error}</p>} {/* Apply the CSS class */}
+      <div className="form-content">
+        <div className="image-container">
+          <img src={MediTech} alt="Logo" />
+        </div>
+      <div className="form-container">
       <form onSubmit={handleSubmit}>
+      <span className="login100-form-title"><h2>Login</h2></span>
         <TextInput
           type="text"
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           id="username"
+          message="Username"
         />
         <TextInput
           label="Password"
@@ -66,11 +75,15 @@ function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           id="password"
+          message="Password"
         />
         
         <SubmitButton loading={loading} text="Login" elseText="Logging....."/>
       </form>
       <p>Don't have an account? <Link to="/">Register</Link></p>
+    </div>
+    </div>
+    </div>
     </div>
   );
 }
