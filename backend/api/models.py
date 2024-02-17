@@ -1,5 +1,6 @@
 from django.db import models
 import random
+from datetime import date
 
 def get_id():
     while True:
@@ -8,6 +9,10 @@ def get_id():
             break
     
     return id
+
+def get_current_date():
+    return date.today()
+
 
 # Create your models here.
 class User(models.Model):
@@ -31,7 +36,7 @@ class GraphDatabase(models.Model):
     p_name = models.CharField(max_length = 50)
     time_array = models.JSONField()
     volume_array = models.JSONField()
-    date = models.DateField(auto_now=True)
+    date = models.DateField(default=get_current_date)
 
     
 # class test(models.Model):

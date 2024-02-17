@@ -140,6 +140,9 @@ class GraphDataSave(APIView):
             time_array_serializable = list(map(float, time_array))
             volume_array_serializable = list(map(float, volume_array))
 
+            if len(time_array_serializable) < 2 :
+                return Response({},status=status.HTTP_100_CONTINUE)
+
             area_under_curve = np.trapz(time_array_serializable, volume_array_serializable)
 
             graph_data = GraphDatabase.objects.create(
@@ -150,24 +153,30 @@ class GraphDataSave(APIView):
                 volume_array=volume_array_serializable
             )
 
-            return Response({"area": np.abs(area_under_curve)}, status=status.HTTP_201_CREATED)
+            return Response({"area": np.round(np.abs(area_under_curve),3)}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class TestAPIView(APIView):
-#     serializer_class = TestSerializer
 
-#     def post(self, request, format=None):
-#         serializer = self.serializer_class(data=request.data)
-#         if serializer.is_valid():
-#             array_data = serializer.validated_data
-#             test_instance = test.objects.create(array=array_data.get('array'))
-#             return Response(TestSerializer(test_instance).data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class GarphDataSend(APIView):
+    serializer_class = GraphDataRequestSerializer
+    def post(self, request,format = None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            u_id = serializer.data.get('u_id')
+            p_name = serializer.data.get('p_name')
+            date = serializer.data.get('date')
+            queryset = GraphDatabase.objects.filter(u_id=u_id, p_name=p_name, date=date)
+            if queryset.exists():
+                data = queryset
+                return Response(GraphDataSendSerializer(data, many = True).data,status=status.HTTP_200_OK)
+            return Response({'message':f'no data on date {date}'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
 
 
 def display(request):
-    st=Profile.objects.all() 
-    Profile.objects.all().delete()
-    User.objects.all().delete()
+    st=GraphDatabase.objects.all() 
+
     return render(request,'display.html',{'st':st})
 

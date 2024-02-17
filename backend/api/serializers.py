@@ -33,10 +33,15 @@ class GraphDataReceiveSerializer(serializers.ModelSerializer):
         model = GraphDatabase
         fields =['u_id','p_name','time_array','volume_array']
 
+class GraphDataRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GraphDatabase
+        fields = ['u_id','p_name','date']
+
 class GraphDataSendSerializer(serializers.ModelSerializer):
     class Meta:
         model = GraphDatabase
-        fields =['u_id','p_name','time_array','v0lume_array','date']
+        fields =['u_id','p_name','time_array','volume_array','date']
 
 # class TestSerializer(serializers.ModelSerializer):
 #     class Meta:
