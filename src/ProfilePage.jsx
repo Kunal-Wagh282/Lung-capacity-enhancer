@@ -7,7 +7,7 @@ import PopupMessage from './Components/PopupMessage';
 import BleButton from './Components/BleButton';
 import Sidebar from './Components/SideBar'; // Import your modal component
 import DrawerComponent from './Components/Drawer'; 
-
+import PrimaryOutlineFullRoundedButtonWithIcon from  "./Components/Button";
 
 function ProfilePage() {
   
@@ -143,7 +143,11 @@ useEffect(() => {
               ))}
             </select>
           <h2>Age:{(selectedProfileAge === null)? (setSelectedProfileAge(calculateAge(profiles.find(profile => profile.uid === profiles.uid).p_dob))):selectedProfileAge}</h2>
-          <button onClick={() => setAddingChildUser(true)}>Add Child User</button>
+
+          <div onClick={() => setAddingChildUser(true)}>
+            
+            <PrimaryOutlineFullRoundedButtonWithIcon/>
+          </div>
           <button onClick={() => deleteChildUser(true)}>Delete Child User</button>
         </div>
       )}

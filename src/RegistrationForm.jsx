@@ -84,6 +84,7 @@ function RegistrationForm() {
   };
 
   return (
+    <div className='registration-page-container'>
     <div className="registration-form-container">
       <div className="form-content">
       <div className="image-container">
@@ -138,6 +139,7 @@ function RegistrationForm() {
       {redirect && (<PopupMessage message={`Username created successfully. Redirecting to login page in ${countdown} seconds...`}/>)}
       {showSuccessPopup && (<PopupMessage message={error}/>)}
       <p>Already registered? <Link to="/login">Login here</Link></p>
+    </div>
     </div>
     </div>
     </div>

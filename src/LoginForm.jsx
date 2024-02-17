@@ -50,14 +50,15 @@ function LoginForm() {
   };
 
   return (
+    <div className = "page-container ">
     <div className="login-form-container"> {/* Apply the CSS class */}
       
       {error && <p className="error-message">{error}</p>} {/* Apply the CSS class */}
       <div className="form-content">
-  <div className="image-container">
-      <img src={MediTech} alt="Logo" />
-    </div>
-    <div className="form-container">
+        <div className="image-container">
+          <img src={MediTech} alt="Logo" />
+        </div>
+      <div className="form-container">
       <form onSubmit={handleSubmit}>
       <span className="login100-form-title"><h2>Login</h2></span>
         <TextInput
@@ -80,6 +81,7 @@ function LoginForm() {
         <SubmitButton loading={loading} text="Login" elseText="Logging....."/>
       </form>
       <p>Don't have an account? <Link to="/">Register</Link></p>
+    </div>
     </div>
     </div>
     </div>

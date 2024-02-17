@@ -1,6 +1,6 @@
 /* RegistrationForm.css */
 
-body{
+/* body{
   
   font-family: "work sans";
   background-image: url('https://www.color-meanings.com/wp-content/uploads/2022/02/Green-and-white-wave-design.jpeg');
@@ -8,8 +8,18 @@ body{
   background-position: center;
   background-repeat: no-repeat;
   
+} */
+.registration-page-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://www.color-meanings.com/wp-content/uploads/2022/02/Green-and-white-wave-design.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-
 
 .registration-form-container {
   display:flex;
