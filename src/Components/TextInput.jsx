@@ -1,14 +1,14 @@
 import React from 'react';
 
-function TextInput({ label, value, onChange, id,type }) {
+function TextInput({ label, value, onChange, id,type,message }) {
   return (
     <div>
-      <label htmlFor={id}>{label}:</label>
+      <label htmlFor={id}></label>
       <input
         type={type}
         id={id}
-        value={value}
         onChange={onChange}
+        placeholder={message}
         required
       />
     </div>

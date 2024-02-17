@@ -4,12 +4,11 @@ import { useLocation, useNavigate ,Link} from 'react-router-dom';
 import './ProfilePage.css'; 
 import API_URL from './config'; // Import the API URL
 import PopupMessage from './Components/PopupMessage';
-import BleButton from './Components/BleButton';
 import Sidebar from './Components/SideBar'; // Import your modal component
 import DrawerComponent from './Components/Drawer'; 
 
 
-function ProfilePage() {
+function History() {
   
   const [newChildUsername, setNewChildUsername] = useState('');
   const [newChildDOB, setNewChildDOB] = useState('');
@@ -28,9 +27,9 @@ function ProfilePage() {
 // const username = userData.username;
 // const password = userData.password;
 
-useEffect(() => {
-  sessionStorage.setItem('nowName', JSON.stringify(selectedProfileName));
-},[])
+// useEffect(() => {
+//   sessionStorage.setItem('nowName', JSON.stringify(selectedProfileName));
+// },[])
   const calculateAge = (dob) => {
     const dobDate = new Date(dob);
     const today = new Date();
@@ -52,35 +51,7 @@ useEffect(() => {
     //console.log("Name",selectedProfileName)
     //console.log("UID", uid)
   };
-  const deleteChildUser = async () => {
-    if (profiles.length === 1) {
-      setSuccessMessage(true);
-      setErrorMessage(`Main user can't be deleted`)
-      setTimeout(() => setSuccessMessage(false), 3000);
-      return;
-    } else {
-      setError('');
-      try {
-        const response = await axios.post(`${API_URL}/del-profile/`, {
-          u_id: uid,
-          p_name: selectedProfileName
-        });
-        if (response.status === 202) {
-          setProfiles(response.data["profile"]);
-          setSuccessMessage(true);
-          setErrorMessage('Username deleted successfully.')
-          setTimeout(() => setSuccessMessage(false), 3000);
-        }
-        if (response.status === 226) {
-          setSuccessMessage(true);
-          setErrorMessage(`Main user can't be deleted`)
-          setTimeout(() => setSuccessMessage(false), 3000);
-        }
-      } catch (error) {
-        setError(error)
-      } 
-    }
-  };
+
   const handleAddChildUser = async () => {
     setError('');
     setAddingChildUser(true);
@@ -132,7 +103,7 @@ useEffect(() => {
     <>
     
     <div className="profile-page-container">
-      <h2>Dashboard</h2>
+      <h2>Select User Name</h2>
       {profiles.length > 0 && (
         <div>
             <select className="dropdown-select" value={selectedProfileName} onChange={handleProfileChange}>
@@ -143,16 +114,13 @@ useEffect(() => {
               ))}
             </select>
           <h2>Age:{(selectedProfileAge === null)? (setSelectedProfileAge(calculateAge(profiles.find(profile => profile.uid === profiles.uid).p_dob))):selectedProfileAge}</h2>
-          <button onClick={() => setAddingChildUser(true)}>Add Child User</button>
-          <button onClick={() => deleteChildUser(true)}>Delete Child User</button>
         </div>
       )}
       <DrawerComponent isOpen={addingChildUser} onClose={() => setAddingChildUser(false)} newChildUsername={newChildUsername} setNewChildUsername={setNewChildUsername} newChildDOB={newChildDOB} setNewChildDOB={setNewChildDOB} handleAddChildUser={handleAddChildUser}/>
       {successMessage && <PopupMessage message={errorMessage} />}
-      <BleButton uid={uid} name={selectedProfileName} age={selectedProfileAge}/><br/>
     </div>
     <Sidebar name={selectedProfileName}/>
     </>
   );
 }
-export default ProfilePage;
+export default History;

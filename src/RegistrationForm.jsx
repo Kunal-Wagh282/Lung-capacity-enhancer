@@ -7,6 +7,7 @@ import PopupMessage from './Components/PopupMessage'; // Import the PopupMessage
 import './RegistrationForm.css'; // Import the CSS file
 import { Link, useNavigate } from 'react-router-dom';
 import API_URL from './config'; // Import the API URL
+import MediTech from './assets/images/Meditech.png';
 
 function RegistrationForm() {
   const [username, setUsername] = useState('');
@@ -84,14 +85,21 @@ function RegistrationForm() {
 
   return (
     <div className="registration-form-container">
-      <h2>Register</h2>
+      <div className="form-content">
+      <div className="image-container">
+          <img src={MediTech} alt="Logo" />
+      </div>
+      <div className="form-container">
+  
       <form onSubmit={handleSubmit}>
+      <span className="login100-form-title"><h2>Register</h2></span>
         <TextInput
           label="Username"
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           id="username"
+          message="Username"
         />
         <TextInput
           label="First Name"
@@ -99,6 +107,7 @@ function RegistrationForm() {
           value={f_name}
           onChange={(e) => setFname(e.target.value)}
           id="f_name"
+          message="First Name"
         />
         <TextInput
           label="Last Name"
@@ -106,6 +115,7 @@ function RegistrationForm() {
           value={l_name}
           onChange={(e) => setLname(e.target.value)}
           id="l_name"
+          message="Last Name"
         />
         <DateInput
         
@@ -113,6 +123,7 @@ function RegistrationForm() {
           value={dob}
           onChange={(e) => setDOB(e.target.value)}
           id="dob"
+          message="Date of Birth"
         />
         <TextInput
           type="password"
@@ -120,12 +131,15 @@ function RegistrationForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           id="password"
+          message="Password"
         />
         <SubmitButton loading={loading} text="Register" elseText="Registering..." />
       </form>
       {redirect && (<PopupMessage message={`Username created successfully. Redirecting to login page in ${countdown} seconds...`}/>)}
       {showSuccessPopup && (<PopupMessage message={error}/>)}
       <p>Already registered? <Link to="/login">Login here</Link></p>
+    </div>
+    </div>
     </div>
   );
 }
