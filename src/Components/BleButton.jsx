@@ -47,7 +47,7 @@ function BleButton({uid,name,age}) {
             
           } else {
             console.error('Device disconnected.');
-            alert('Device disconnected1')
+            //alert('Device disconnected1')
           }
         } catch (error) {
           console.log(error)

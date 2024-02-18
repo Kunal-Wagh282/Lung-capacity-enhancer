@@ -5,6 +5,9 @@
   padding: 2rem;
   text-align: center;
 } */
+body{
+  background-color: white;
+}
 .profile-page-container {
   max-width: 1280px;
   margin: 0 auto;
@@ -35,5 +38,15 @@
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
+  }
+
+  .charts-container {
+    width: 90%; /* Adjust width as needed */
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Display two columns */
+    grid-gap: 20px; /* Optional: Add gap between charts */
   }
   
