@@ -53,7 +53,16 @@ h5 {
     padding: 2rem;
     text-align: center;
   }
-
+  .charts-container {
+    width: 90%; /* Adjust width as needed */
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Display two columns */
+    grid-gap: 20px; /* Optional: Add gap between charts */
+  }
+  
   .containers {
     display: flex; /* Use flexbox for layout */
     gap: 120px; /* Space evenly between the two containers */

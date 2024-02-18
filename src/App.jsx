@@ -10,6 +10,7 @@ import Try2 from './Try2';
 function App() {
   return (
     <BrowserRouter>
+    
       <Routes>
         <Route path="/" exact element={<RegistrationForm/>} />
         <Route path="/login" exact element={<LoginForm/>} />

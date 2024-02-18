@@ -22,14 +22,21 @@
     "axios": "^1.6.7",
     "chart.js": "^4.4.1",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
+<<<<<<< HEAD
     "react-router-dom": "^6.22.1",
+=======
+    "react-router-dom": "^6.22.0",
+    "tailgrids": "^2.1.0",
+>>>>>>> 00f3b4c77664ab38daf446e302a53c924fca7409
     "webbluetooth": "^3.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.17",
     "eslint": "^8.55.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",

@@ -114,7 +114,11 @@ align-items: center;
 padding: 10px;
 color: #ffffff;
 border-bottom: 1px solid #4d606e;
+text-decoration: none;
 }
+
+
+
 
 .profile {
 margin-left: 50px;
