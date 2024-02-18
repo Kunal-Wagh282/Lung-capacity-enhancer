@@ -27,6 +27,7 @@ body {
 }
 
 .sidebar {
+  flex: 0 0 200px;
   position: fixed;
   top: 0;
   width: 50px;
@@ -50,11 +51,11 @@ flex-direction: column;
 
 .sidebar .sidebar-position:hover {
   background-color: #15181a;
-  border-right:5px rgb(51,148,111);
+  border-right:5px #97dc21;
 }
 
 .sidebar svg {
-  color: rgb(51,148,111);
+  color: #97dc21;;
   min-width: 25px;
 }
 

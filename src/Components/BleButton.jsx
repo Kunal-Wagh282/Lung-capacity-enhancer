@@ -150,14 +150,19 @@ function BleButton({uid,name,age}) {
       };
     return (
         <>
+        <div className='bt-buttons'>
+            <h5>Bluetooth Connection</h5>
             <button className="bluetooth-button" onClick={connectToDevice} disabled={isConnected}>
                 Connect
             </button>
             <button className="bluetooth-button" onClick={disconnectDevice} disabled={!isConnected}>
                 Disconnect
             </button>
-            {device && <h3>Connected to: {device.name}</h3>}
-            {!device && <h3>Disconnected</h3>}
+            <br></br>
+            {device && <h6>Status: Connected to: {device.name}</h6>}
+            
+            {!device && <h6>Status: Disconnected</h6>}
+            </div>
       {showSuccessPopup && (<PopupMessage message={error}/>)}
       <div className='chart-canvas'>
       <LineGraph time={time} volumePerSecond={volumePerSecond}/>

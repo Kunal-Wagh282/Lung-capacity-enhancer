@@ -92,17 +92,23 @@ DateInput {
   font-size: 1.1rem;
   color: white;
   font-weight: 700;
-  background: #4fd714;
+  background: #97dc21;
   margin-top: 30px;
   border: 0px;
   cursor: pointer;
-  transition: opacity 0.25s ease-out;
+  /* transition: opacity 0.25s ease-out; */
   padding: 0; /* Remove padding to ensure consistent height */
   line-height: 40px; /* Center text vertically */
+
+  transition-property: transform ;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
 }
 
 .login-form-container button[type="submit"]:hover {
-  opacity: 0.7;
+  /* opacity: 0.7; */
+  transform: scale(1.03);
 }
  
 

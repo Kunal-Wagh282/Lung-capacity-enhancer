@@ -7,7 +7,9 @@ import PopupMessage from './Components/PopupMessage';
 import BleButton from './Components/BleButton';
 import Sidebar from './Components/SideBar'; // Import your modal component
 import DrawerComponent from './Components/Drawer'; 
-import PrimaryOutlineFullRoundedButtonWithIcon from  "./Components/Button";
+import { Navbar } from './Components/Navbar';
+
+
 
 function ProfilePage() {
   
@@ -130,11 +132,13 @@ useEffect(() => {
   };
   return (
     <>
-    
-    <div className="profile-page-container">
-      <h2>Dashboard</h2>
-      {profiles.length > 0 && (
-        <div>
+    <div>
+      <Navbar/>
+    </div>
+      <div className='containers'>
+        <div className='user-container'>
+            {profiles.length > 0 && (
+             <div>
             <select className="dropdown-select" value={selectedProfileName} onChange={handleProfileChange}>
               {profiles.map((profile, index) => (
                 <option className="dropdown-option" key={index} value={profile.p_name}>
@@ -142,19 +146,42 @@ useEffect(() => {
                 </option>
               ))}
             </select>
-          <h2>Age:{(selectedProfileAge === null)? (setSelectedProfileAge(calculateAge(profiles.find(profile => profile.uid === profiles.uid).p_dob))):selectedProfileAge}</h2>
+          <h6>Age of the selected User: {(selectedProfileAge === null)? (setSelectedProfileAge(calculateAge(profiles.find(profile => profile.uid === profiles.uid).p_dob))):selectedProfileAge}</h6>
 
-          <div onClick={() => setAddingChildUser(true)}>
-            
-            <PrimaryOutlineFullRoundedButtonWithIcon/>
+          <div className='add-delete-button'>
+            <button onClick={() => setAddingChildUser(true)}>Add Child User</button>
+          
+            <button onClick={() => deleteChildUser(true)}>Delete Child User</button>
           </div>
-          <button onClick={() => deleteChildUser(true)}>Delete Child User</button>
         </div>
       )}
+     </div>
+
+
       <DrawerComponent isOpen={addingChildUser} onClose={() => setAddingChildUser(false)} newChildUsername={newChildUsername} setNewChildUsername={setNewChildUsername} newChildDOB={newChildDOB} setNewChildDOB={setNewChildDOB} handleAddChildUser={handleAddChildUser}/>
+      
+      
       {successMessage && <PopupMessage message={errorMessage} />}
+
+      <div className='bluetooth-container'  style={{
+        alignContent: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+        maxWidth: '400px',
+        maxHeight: '200px',
+        margin: '80px',
+        padding: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '20px',
+        backgroundColor: '#f9f9f9',
+        textAlign: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+}}>
       <BleButton uid={uid} name={selectedProfileName} age={selectedProfileAge}/><br/>
-    </div>
+      
+      </div>
+     </div>
     <Sidebar name={selectedProfileName}/>
     </>
   );
