@@ -8,9 +8,19 @@ from.serializers import*
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime
-import json
+from .ReportGenrator.report_gen import generate_report
 import numpy as np
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.graphics import renderPDF
+from svglib.svglib import svg2rlg
+from io import BytesIO
+import matplotlib.pyplot as plt
+from django.http import HttpResponse
+from io import BytesIO
 
+
+from reportlab.graphics import renderPM
 
 
 # Create your views here.
@@ -150,7 +160,8 @@ class GraphDataSave(APIView):
                 p_name=p_name,
                 p_id=p_id,
                 time_array=time_array_serializable,
-                volume_array=volume_array_serializable
+                volume_array=volume_array_serializable,
+                total_volume =  np.round(np.abs(area_under_curve),3)
             )
 
             return Response({"area": np.round(np.abs(area_under_curve),3)}, status=status.HTTP_201_CREATED)
@@ -170,6 +181,23 @@ class GarphDataSend(APIView):
                 data = queryset
                 return Response(GraphDataSendSerializer(data, many = True).data,status=status.HTTP_200_OK)
             return Response({'message':f'no data on date {date}'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class GenerateReport(APIView):
+    serializer_class = ReportGeneratorRequestSerializer
+    def post(self, request, fromat = None):
+        serializer = self.serializer_class(data = request.data)
+        if serializer.is_valid():
+            u_id = serializer.data.get('u_id')
+            p_name = serializer.data.get('p_name')
+            from_date = serializer.data.get('from_date')
+            to_date = serializer.data.get('to_date')
+            queryset = GraphDatabase.objects.filter(date__range=(from_date, to_date), u_id=u_id, p_name=p_name)
+            if queryset.exists():
+                response  = generate_report(queryset.values())
+                
+                return response
+            return Response({'message':f'No data found between {from_date} and {to_date} '}, status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 

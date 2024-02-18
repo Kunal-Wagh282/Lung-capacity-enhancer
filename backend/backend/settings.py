@@ -134,3 +134,5 @@ CORS_ALLOWED_ORIGINS = [
       "http://localhost:5173",
       "http://172.16.32.241:5173"
   ]
+
+DATE_INPUT_FORMATS = ['%Y-%m-%d', ]

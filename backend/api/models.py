@@ -36,6 +36,7 @@ class GraphDatabase(models.Model):
     p_name = models.CharField(max_length = 50)
     time_array = models.JSONField()
     volume_array = models.JSONField()
+    total_volume = models.FloatField(default=3.1)
     date = models.DateField(default=get_current_date)
 
     

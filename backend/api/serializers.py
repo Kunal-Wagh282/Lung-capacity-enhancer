@@ -41,7 +41,15 @@ class GraphDataRequestSerializer(serializers.ModelSerializer):
 class GraphDataSendSerializer(serializers.ModelSerializer):
     class Meta:
         model = GraphDatabase
-        fields =['u_id','p_name','time_array','volume_array','date']
+        fields =['u_id','p_name','time_array','volume_array','date','total_volume']
+
+    
+class ReportGeneratorRequestSerializer(serializers.Serializer):
+    u_id = serializers.IntegerField()
+    p_name = serializers.CharField(max_length=50)
+    from_date = serializers.DateField()
+    to_date = serializers.DateField()
+    
 
 # class TestSerializer(serializers.ModelSerializer):
 #     class Meta:
