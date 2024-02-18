@@ -14,8 +14,7 @@ function DateInput({ label, value, onChange, id ,message}) {
         onChange={onChange}
         placeholder={message}
         required
-        placeholder="Date of Birth"
-       
+        
       />
     </div>
   );

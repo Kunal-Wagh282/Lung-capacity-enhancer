@@ -5,7 +5,6 @@ import ProfilePage from './ProfilePage';
 import RegistrationForm from './RegistrationForm';
 import History from './History';
 import Try2 from './Try2';
-import DarkSemiRoundedButtonWithIcon from './Components/Button'
 
 
 function App() {

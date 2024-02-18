@@ -51,17 +51,20 @@ function SideBar({ name }) { // Receive `name` prop here
             <FontAwesomeIcon icon={isOpen ? faTimes : faBars} />
           </div>
 
-          <div className="profile-container">
+        
+            <Link to="/profiles" className="profile-container">
             <Profile name={name}/>
-            </div>
+            
+          </Link>
+
           {/* Link to Menu item 2 route */}
-<Link to="/history" className="sidebar-position">
+          <Link to="/history" className="sidebar-position">
             <FontAwesomeIcon icon={faHistory} />
             <span>History</span>
           </Link>
 
           {/* Link to Menu item 3 route */}
-          <Link to="/menu-item-3" className="sidebar-position">
+          <Link to="/requesthistory" className="sidebar-position">
             <FontAwesomeIcon icon={faFileArchive} />
             <span>Generate Report</span>
           </Link>
